@@ -7,5 +7,10 @@
   },
   "dependencies": {
     "zod": "4.6.7"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p .",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage && node ../../scripts/coverage/check-coverage.mjs --report coverage/coverage-final.json --src src"
   }
 }
