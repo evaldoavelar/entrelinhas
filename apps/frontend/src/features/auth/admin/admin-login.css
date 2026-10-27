@@ -1,0 +1,65 @@
+.admin-login-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-login-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-login-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.admin-login-submit {
+  margin-top: 0;
+  width: 100%;
+  min-height: 44px;
+}
+
+.admin-login-passkey {
+  width: 100%;
+  min-height: 44px;
+}
+
+.admin-login-alert {
+  margin-top: 16px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-danger);
+  color: var(--color-danger);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.admin-login-notice {
+  margin-top: 16px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.admin-login-lockout {
+  margin-top: 24px;
+}
+
+.admin-login-back {
+  display: inline-block;
+  margin-top: 40px;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.admin-login-back:hover {
+  text-decoration: underline;
+}
