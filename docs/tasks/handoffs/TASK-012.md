@@ -21,6 +21,8 @@
 - `COVERAGE_BASE=main npm run test:coverage -w apps/frontend`: projeto lines 98,54% / statements 96,37% / functions 98,72% / branches 89,51%; diff linhas 100% / branches 88,04%; nenhum arquivo abaixo do piso.
 - `PW_PORT=4176 npx playwright test tests/e2e/library.spec.ts`: 24 passed, duas execuções seguidas sem update (baselines criadas com `--update-snapshots=missing` e revisadas).
 - `npm run verify` (antes do merge da TASK-010): exit 0, 168 testes frontend, 40 e2e.
+- Após merge da `main` com TASK-010 (`cf98e34`) e correção do `shell.spec.ts`: `npm run verify` exit 0, 176 testes frontend, 52 e2e; `git status` limpo após a execução.
+- `tests/e2e/shell.spec.ts`: o teste de evidência da TASK-005 sobrescrevia `docs/design/evidence/TASK-005/*.png` a cada execução (mesmo defeito da revisão r1 da TASK-010); agora grava em `test-results` e as evidências revisadas foram restauradas.
 
 ## Visual
 
