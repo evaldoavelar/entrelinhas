@@ -1,6 +1,6 @@
 # TASK-005 — AppShell, router e tema por perfil
 
-- **Estado:** planned · **Implementa:** Claude · **Revisa:** Codex · **Sprint:** S01
+- **Estado:** done · **Implementa:** Claude · **Revisa:** Codex · **Sprint:** S01
 - **Frames:** 01 (shell: sidebar 224px, navegação, card de status, perfil, PlayerBar), 16 (shell móvel: tab bar, mini player), 09 (variante admin).
 - **Objetivo observável:** rotas privadas exigem sessão (sem sessão → `/login`); sidebar com item ativo e badge de notificações; layout móvel <768px com tab bar; tema Dracula/Claro alternável e salvo no perfil via API mock.
 - **Requisitos:** RF34, RF40, RF41, RF42 (UI), CA27, CA28.
