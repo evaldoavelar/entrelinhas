@@ -11,5 +11,5 @@ export async function startMockWorker(location: Location) {
   setScenario(parseScenario(params.get('scenario')));
   db.sessionProfileId = params.get('mockSession');
   // The guard comes last so unhandled /v1 calls never leave the browser; static assets bypass.
-  await setupWorker(...handlers, unhandledApiGuard).start({ quiet: true, onUnhandledFrame: 'bypass' });
+  await setupWorker(...handlers, ...unhandledApiGuard).start({ quiet: true, onUnhandledFrame: 'bypass' });
 }

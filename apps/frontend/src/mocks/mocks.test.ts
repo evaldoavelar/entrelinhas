@@ -136,14 +136,17 @@ describe('review TASK-003 findings', () => {
     vi.spyOn(console, 'error').mockImplementation((...args: unknown[]) => {
       logged.push(args.map(String).join(' '));
     });
-    server.use(unhandledApiGuard);
+    server.use(...unhandledApiGuard);
     expect(await failure(api.listCategories())).toMatchObject({ status: 501, code: 'mock_handler_missing' });
     expect(logged.join('\n')).toContain('GET /v1/categories');
+    // Bare prefix too (re-review TASK-003): '/v1/*' alone does not match '/v1'.
+    expect((await fetch(new URL('/v1', location.origin))).status).toBe(501);
+    expect((await fetch(new URL('/v1?x=1', location.origin), { method: 'POST' })).status).toBe(501);
   });
 
   test('guard does not shadow existing handlers when registered last', async () => {
     const { unhandledApiGuard } = await import('./guard');
-    server.resetHandlers(...(await import('./handlers')).handlers, unhandledApiGuard);
+    server.resetHandlers(...(await import('./handlers')).handlers, ...unhandledApiGuard);
     await expect(api.listPublicProfiles()).resolves.toMatchObject({ items: expect.any(Array) });
   });
 

@@ -11,6 +11,7 @@ test('unhandled /v1 route is answered by the mock guard, not the network', async
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   const status = await page.evaluate(async () => (await fetch('/v1/rota-inexistente')).status);
   expect(status).toBe(501);
+  expect(await page.evaluate(async () => (await fetch('/v1')).status)).toBe(501);
   const profiles = await page.evaluate(async () => (await fetch('/v1/profiles/public')).status);
   expect(profiles).toBe(200);
   expect(forwarded).toEqual([]);
