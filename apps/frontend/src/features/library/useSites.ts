@@ -40,6 +40,7 @@ export function useSites(query: Omit<SitesQuery, 'cursor' | 'limit'>) {
   useEffect(() => {
     const abort = new AbortController();
     controller.current = abort;
+    failedMore.current = false;
     api.listSites({ ...(JSON.parse(key) as SitesQuery), limit: PAGE_SIZE }, { signal: abort.signal }).then(
       (page) => setState({ items: page.items, total: page.total, nextCursor: page.next_cursor, status: 'ready', error: null }),
       (e: unknown) => {

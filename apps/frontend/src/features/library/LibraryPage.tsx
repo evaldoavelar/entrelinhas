@@ -39,6 +39,13 @@ export function LibraryPage() {
   const category = params.get('category') ?? undefined;
   const q = params.get('q') ?? undefined;
   const [searchText, setSearchText] = useState(q ?? '');
+  // q changed from outside the box (link, back button): show it instead of re-applying old text.
+  const [shownQ, setShownQ] = useState(q);
+  if (q !== shownQ) {
+    setShownQ(q);
+    if ((q ?? '') !== searchText.trim()) setSearchText(q ?? '');
+  }
+  const [viewError, setViewError] = useState('');
   const [categories, setCategories] = useState<Category[]>([]);
   const sites = useSites({ sort, order, ...(category ? { category } : {}), ...(q ? { q } : {}) });
   const now = new Date();
@@ -73,9 +80,15 @@ export function LibraryPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- setParam is stable in behaviour; q drives re-sync
   }, [searchText, q]);
 
+  // Optimistic switch; a preference that could not be saved is reverted so RF39 never lies.
   const chooseView = (next: LibraryView) => {
+    const previous = view;
     setView(next);
-    void updatePreferences({ library_view: next });
+    setViewError('');
+    updatePreferences({ library_view: next }).catch(() => {
+      setView(previous);
+      setViewError('Não foi possível salvar o modo de exibição. Tente de novo.');
+    });
   };
 
   const empty = sites.status === 'ready' && sites.total === 0;
@@ -136,6 +149,12 @@ export function LibraryPage() {
           ))}
         </div>
       </div>
+
+      {viewError ? (
+        <p role="alert" className="library__view-error">
+          {viewError}
+        </p>
+      ) : null}
 
       {sites.status === 'loading' ? (
         <p role="status" className="library__status">

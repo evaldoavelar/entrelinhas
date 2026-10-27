@@ -52,3 +52,18 @@ test('a next page aborted by a filter change is not reported as an error', async
   expect(result.current.status).toBe('loading');
   expect(result.current.error).toBeNull();
 });
+
+test('retry after a failed next page and a failed new filter reloads the new first page (review r1 #2)', async () => {
+  const { result, rerender } = render({ sort: 'last_conversion', order: 'desc' });
+  await waitFor(() => expect(result.current.status).toBe('ready'));
+  setScenario('unavailable');
+  act(() => result.current.loadMore());
+  await waitFor(() => expect(result.current.status).toBe('error'));
+  rerender({ sort: 'name', order: 'asc' });
+  await waitFor(() => expect(result.current.status).toBe('error'));
+  expect(result.current.items).toHaveLength(0);
+  setScenario('default');
+  act(() => result.current.retry());
+  await waitFor(() => expect(result.current.status).toBe('ready'));
+  expect(result.current.items).toHaveLength(6);
+});

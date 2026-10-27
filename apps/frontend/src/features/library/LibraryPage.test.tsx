@@ -154,3 +154,35 @@ test('a site never converted says so instead of a date (RF06)', async () => {
   expect(first).toHaveTextContent('Sextante');
   expect(first).toHaveTextContent('Nenhuma conversão ainda');
 });
+
+describe('review TASK-012 r1', () => {
+  test('navigating to /library without a query clears the search box (#1)', async () => {
+    const router = renderLibrary('/library?q=submarino');
+    await siteList();
+    expect(screen.getByRole('searchbox', { name: 'Buscar em posts, resumos e tags' })).toHaveValue('submarino');
+    await userEvent.click(within(screen.getByRole('navigation', { name: 'Principal' })).getByRole('link', { name: 'Biblioteca' }));
+    expect(screen.getByRole('searchbox', { name: 'Buscar em posts, resumos e tags' })).toHaveValue('');
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    expect(router.state.location.search).toBe('');
+  });
+
+  test('a view mode that cannot be saved is reverted with a message (#3)', async () => {
+    renderLibrary();
+    await siteList();
+    setScenario('unavailable');
+    const group = screen.getByRole('group', { name: 'Modo de exibição' });
+    await userEvent.click(within(group).getByRole('button', { name: 'Lista' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Não foi possível salvar o modo de exibição');
+    expect(within(group).getByRole('button', { name: 'Cards' })).toHaveAttribute('aria-pressed', 'true');
+    expect(await siteList()).toHaveAttribute('data-view', 'cards');
+  });
+
+  test('Tab out of the sort menu closes it (#4)', async () => {
+    renderLibrary();
+    await siteList();
+    await userEvent.click(screen.getByRole('button', { name: /^Ordenar:/ }));
+    expect(screen.getByRole('menu', { name: 'Ordenar biblioteca' })).toBeInTheDocument();
+    await userEvent.tab();
+    expect(screen.queryByRole('menu', { name: 'Ordenar biblioteca' })).toBeNull();
+  });
+});

@@ -35,3 +35,13 @@ Frames (sha256 prefixo): 01 `c0af61b48c8cfc42`, 02 `fbabbcb1a1f89fc4`, 03 `cc96d
 
 - O e2e não cobre persistência do modo após recarregar a página (o banco MSW do navegador reinicia no reload); cobre a volta por navegação interna e o teste unitário "saved view mode is used on the next visit".
 - Próximo: revisão Codex → integração → onda 2 (TASK-013/014 dependem desta).
+
+## Revisão Codex r1 (REPROVADO) → correções (RED antes de cada uma)
+
+1. Debounce desfazia navegação pela URL (`/library?q=…` → link "Biblioteca" restaurava `q`): campo agora acompanha mudanças externas de `q`. RED: `review TASK-012 r1 › navigating to /library without a query clears the search box (#1)` (`toHaveValue` falhou).
+2. Retry inoperante após falha de "Carregar mais" + troca de filtro: `failedMore` reiniciado a cada nova consulta. RED: `useSites.test.ts › retry after a failed next page and a failed new filter…` (`expected 'error' to be 'ready'`).
+3. Falha ao salvar o modo era ignorada: troca otimista revertida com `role="alert"` "Não foi possível salvar o modo de exibição. Tente de novo." RED: `…a view mode that cannot be saved is reverted with a message (#3)` (`Unable to find role="alert"`).
+4. Tab saía do menu de ordenação deixando-o aberto: o menu fecha ao perder o foco para fora dele (sem puxar o foco de volta). RED: `…Tab out of the sort menu closes it (#4)`.
+
+Após correções: `npm run verify` exit 0 (180 testes frontend, 52 e2e, baselines inalteradas); diff 100% linhas / 88,89% branches.
+Pendência fora do escopo registrada no STATUS: o toggle de tema do `AppShell` (TASK-005) também usa `void updatePreferences` sem tratar falha.

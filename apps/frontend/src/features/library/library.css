@@ -311,6 +311,11 @@
   margin-top: 0;
 }
 
+.library__view-error {
+  margin-top: var(--space-3);
+  color: var(--color-danger);
+  font-size: var(--text-sm);
+}
 .library__status,
 .library__empty,
 .library__error {
