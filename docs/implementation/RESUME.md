@@ -15,11 +15,11 @@
    ```
 7. Após integrar: atualizar STATUS, traceability e este arquivo se o procedimento mudar.
 
-Próximo passo concreto (checkpoint 27/10, fim da sessão 2 — ver tabela "Em aberto" de STATUS.md):
+Próximo passo concreto (checkpoint 27/10, sessão 3 — ver tabela "Em aberto" de STATUS.md):
 1. ~~TASK-013~~ integrada (`9886b83`).
 2. ~~TASK-014~~ integrada (`c07dfd0`).
-3. **TASK-011** (`../entrelinhas-wt/TASK-011`, `c5a1285`): falta revisão independente das mudanças do líder (rotas `/admin/login` e `/admin`, e2e, CSS) — Codex (limite de uso em 27/10 até 15:04). Aprovado → integrar.
-4. Depois: fechar SPRINT-02 (traceability, revisão de sprint) e seguir para SPRINT-03 (EXECUTION-ORDER.md).
+3. ~~TASK-011~~ integrada (`0bb9a99`); SPRINT-02 concluída.
+4. **SPRINT-03** (`docs/sprints/SPRINT-03.md`): começar pela TASK-019 (contrato do líder: imports, idempotência, categories, playback em `packages/contracts`, mocks e api-client); depois TASK-020/021/022 (máx. 2 workers; Codex e agy já disponíveis).
 
 Regras aprendidas na sessão 2: agy worker = `agy --mode accept-edits --sandbox --add-dir <repo>/.git -p "…" < /dev/null` (com `--mode auto` ele saiu do sandbox sozinho; com sandbox o git fica somente leitura e o líder comita com `Co-Authored-By: agy`); agy revisor = `agy --mode plan --sandbox -p "…" < /dev/null`; `-p` sempre por último. Rodar `npm run verify` e o gate `COVERAGE_BASE=main` **antes** de cada commit.
 

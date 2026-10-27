@@ -72,7 +72,7 @@ Colunas: requisito → tarefas → testes → estado → natureza da evidência.
 | RF55 | S10+ (G0-B) | — | planned | real pendente |
 | RF56 | S10+ (G0-B) | — | planned | real pendente |
 | RF57 | S10+ fase 5 | — | planned | real pendente |
-| RF58 | TASK-011, TASK-053 | — | planned | simulado na UI |
+| RF58 | TASK-011, TASK-053 | TASK-011: `features/auth/admin/AdminLoginPage.test.tsx`, `e2e/admin-login.spec.ts` (login; operações sensíveis na TASK-053) | parcial (TASK-053 pendente) | simulado na UI |
 | RF59 | TASK-052 | — | planned | simulado na UI |
 | RF60 | TASK-030 (indisponível); S10+ | — | planned | real pendente |
 | RF61 | TASK-070 | — | planned | simulado na UI |
