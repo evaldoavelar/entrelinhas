@@ -30,16 +30,12 @@ Em vez de deixar dezenas de abas abertas no navegador ou listas infinitas de "le
 
 ## ⚙️ Como Funciona
 
-```
-  ┌─────────────────┐       ┌──────────────────────┐       ┌──────────────────────┐
-  │   1. Captura    │  ──▶  │ 2. Extração & Resumo │  ──▶  │  3. Síntese de Voz   │
-  │ Web / Extensão  │       │  Texto limpo + tags  │       │     (TTS Local)      │
-  └─────────────────┘       └──────────────────────┘       └──────────────────────┘
-                                                                       │
-  ┌─────────────────┐       ┌──────────────────────┐                   ▼
-  │  5. Reprodução  │  ◀──  │    4. Biblioteca     │  ◀────────────────┘
-  │ Player Web/Down │       │ Arquivo com ID3/Capa │
-  └─────────────────┘       └──────────────────────┘
+```mermaid
+flowchart TD
+    A["1. Captura (URL manual, Extensão de Navegador ou Feeds)"] --> B["2. Higienização (Texto limpo, resumo fiel e tags automáticas)"]
+    B --> C["3. Narração (Síntese de voz natural e audiodescrição)"]
+    C --> D["4. Biblioteca (Áudio estruturado com capa e metadados ID3)"]
+    D --> E["5. Escuta (Player Web com persistência de progresso e playlists)"]
 ```
 
 1. **Captura Inteligente:**
