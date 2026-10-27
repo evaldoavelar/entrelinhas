@@ -85,32 +85,83 @@ export function evaluate(report, { perFileMin = 20, srcDir } = {}) {
 }
 
 export function diffCoverage(report, changedLines) {
-  let total = 0;
-  let covered = 0;
-  for (const [path, lines] of Object.entries(changedLines)) {
+  const lines = { total: 0, covered: 0 };
+  const branches = { total: 0, covered: 0 };
+  for (const [path, changed] of Object.entries(changedLines)) {
     const fc = report[path];
     if (!fc) continue;
+    const changedSet = new Set(changed);
     const executable = statementLines(fc);
-    for (const line of lines) {
+    for (const line of changedSet) {
       if (!executable.has(line)) continue;
-      total += 1;
-      if (executable.get(line) > 0) covered += 1;
+      lines.total += 1;
+      if (executable.get(line) > 0) lines.covered += 1;
+    }
+    // A branch arm counts when it starts on a changed line (falls back to the branch's own location).
+    for (const [id, branch] of Object.entries(fc.branchMap)) {
+      branch.locations.forEach((loc, arm) => {
+        const line = loc?.start?.line ?? branch.loc?.start?.line;
+        if (!changedSet.has(line)) return;
+        branches.total += 1;
+        if (fc.b[id][arm] > 0) branches.covered += 1;
+      });
     }
   }
-  if (total === 0) return { ok: true, note: 'diff: N/A (nenhuma linha executável alterada)' };
-  const m = { total, covered };
-  return { ok: passes(m), note: `diff: ${fmt('linhas', m)}` };
+  if (lines.total === 0 && branches.total === 0) return { ok: true, note: 'diff: N/A (nenhuma linha executável alterada)' };
+  const parts = [];
+  let ok = true;
+  for (const [name, m] of [['linhas', lines], ['branches', branches]]) {
+    if (m.total === 0) {
+      parts.push(`${name} N/A`);
+      continue;
+    }
+    parts.push(fmt(name, m));
+    if (!passes(m)) ok = false;
+  }
+  return { ok, note: `diff: ${parts.join(', ')}` };
 }
 
-function changedLinesSince(base, root) {
-  const out = execFileSync('git', ['diff', '-U0', '--no-color', base, '--'], { cwd: root, encoding: 'utf8' });
+// Git C-style quoted path ("a/can\303\247.ts") -> UTF-8 string.
+function unquoteGitPath(raw) {
+  if (!raw.startsWith('"')) return raw;
+  const bytes = [];
+  const body = raw.slice(1, -1);
+  for (let i = 0; i < body.length; i++) {
+    const ch = body[i];
+    if (ch !== '\\') {
+      bytes.push(...Buffer.from(ch, 'utf8'));
+      continue;
+    }
+    const next = body[i + 1];
+    if (/[0-7]/.test(next)) {
+      bytes.push(parseInt(body.slice(i + 1, i + 4), 8));
+      i += 3;
+    } else {
+      bytes.push(({ n: 10, t: 9, '"': 34, '\\': 92 })[next] ?? next.charCodeAt(0));
+      i += 1;
+    }
+  }
+  return Buffer.from(bytes).toString('utf8');
+}
+
+// Parses `git diff -U0` output into { absolutePath: [addedLineNumbers] }.
+// File headers are only recognised between a `diff --git` line and the first hunk, so added
+// content that starts with "++" (e.g. `++count`) is never mistaken for a header.
+export function parseUnifiedDiff(text, root) {
   const result = {};
   let current = null;
-  for (const line of out.split('\n')) {
-    if (line.startsWith('+++ ')) {
-      current = line === '+++ /dev/null' ? null : resolve(root, line.slice(6));
+  let inHeader = false;
+  for (const line of text.split('\n')) {
+    if (line.startsWith('diff --git ')) {
+      inHeader = true;
+      current = null;
+    } else if (inHeader && line.startsWith('+++ ')) {
+      const target = unquoteGitPath(line.slice(4));
+      current = target === '/dev/null' ? null : resolve(root, target.replace(/^b\//, ''));
       if (current) result[current] = [];
-    } else if (current && line.startsWith('@@')) {
+    } else if (line.startsWith('@@')) {
+      inHeader = false;
+      if (!current) continue;
       const m = /\+(\d+)(?:,(\d+))?/.exec(line);
       const start = Number(m[1]);
       const count = m[2] === undefined ? 1 : Number(m[2]);
@@ -118,6 +169,11 @@ function changedLinesSince(base, root) {
     }
   }
   return result;
+}
+
+function changedLinesSince(base, root) {
+  const out = execFileSync('git', ['diff', '-U0', '--no-color', '--no-ext-diff', base, '--'], { cwd: root, encoding: 'utf8' });
+  return parseUnifiedDiff(out, root);
 }
 
 function main(argv) {

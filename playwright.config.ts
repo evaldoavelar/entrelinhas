@@ -20,6 +20,7 @@ export default defineConfig({
     { name: 'dark-desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 1000 }, colorScheme: 'dark' } },
     { name: 'light-desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 1000 }, colorScheme: 'light' } },
     { name: 'dark-mobile', use: { ...devices['Pixel 7'], viewport: { width: 390, height: 1100 }, colorScheme: 'dark' } },
+    { name: 'light-mobile', use: { ...devices['Pixel 7'], viewport: { width: 390, height: 1100 }, colorScheme: 'light' } },
   ],
   webServer: {
     command: 'npm run preview -w apps/frontend',

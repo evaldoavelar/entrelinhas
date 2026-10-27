@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, writeFileSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { evaluate, summarizeFile, diffCoverage } from './check-coverage.mjs';
+import { evaluate, summarizeFile, diffCoverage, parseUnifiedDiff } from './check-coverage.mjs';
 
 // Builds an istanbul file coverage with `total` statements on lines 1..total, first `covered` hit.
 function fileCov(path, total, covered, { fns = [], branches = [] } = {}) {
@@ -109,4 +109,46 @@ test('diff coverage pass and N/A cases', () => {
   const na = diffCoverage(rep, { '/p/src/other.md': [1] });
   assert.equal(na.ok, true);
   assert.match(na.note, /N\/A/);
+});
+
+test('diff coverage gates branches on changed lines, not only lines (review TASK-001 #1)', () => {
+  // Line 1 covered, but a new branch on line 1 has an uncovered arm.
+  const fc = fileCov('/p/src/a.ts', 1, 1, { branches: [[1, 0]] });
+  fc.branchMap[0].loc = { start: { line: 1, column: 0 } };
+  fc.branchMap[0].locations = [{ start: { line: 1, column: 0 } }, { start: { line: 1, column: 10 } }];
+  const r = diffCoverage(report(fc), { '/p/src/a.ts': [1] });
+  assert.equal(r.ok, false);
+  assert.match(r.note, /branches 1\/2/);
+});
+
+test('diff parser ignores "+++" content lines inside hunks (review TASK-001 #2)', () => {
+  const diff = [
+    'diff --git a/src/a.ts b/src/a.ts',
+    'index 1..2 100644',
+    '--- a/src/a.ts',
+    '+++ b/src/a.ts',
+    '@@ -0,0 +1,2 @@',
+    '+let count = 0;',
+    '+++count;',
+    '@@ -10,0 +12,1 @@',
+    '+export const x = count;',
+  ].join('\n');
+  assert.deepEqual(parseUnifiedDiff(diff, '/root'), { '/root/src/a.ts': [1, 2, 12] });
+});
+
+test('diff parser decodes git-quoted paths with non-ASCII names', () => {
+  const diff = [
+    'diff --git "a/src/canç\\303\\243o.ts" "b/src/canç\\303\\243o.ts"',
+    'new file mode 100644',
+    '--- /dev/null',
+    '+++ "b/src/can\\303\\247\\303\\243o.ts"',
+    '@@ -0,0 +1 @@',
+    '+export {};',
+  ].join('\n');
+  assert.deepEqual(parseUnifiedDiff(diff, '/root'), { '/root/src/canção.ts': [1] });
+});
+
+test('diff parser skips deleted files', () => {
+  const diff = ['diff --git a/x.ts b/x.ts', 'deleted file mode 100644', '--- a/x.ts', '+++ /dev/null', '@@ -1 +0,0 @@', '-a'].join('\n');
+  assert.deepEqual(parseUnifiedDiff(diff, '/root'), {});
 });
