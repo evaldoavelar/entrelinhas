@@ -26,6 +26,7 @@ Fonte consolidada de progresso. Conferir sempre contra `git log`/`git worktree l
 
 | Tarefa | Estado | Onde | Pendência concreta |
 | --- | --- | --- | --- |
+| TASK-019 contrato imports/categories/playback | ready (líder) | `packages/contracts`, `mocks`, `api-client` | Bloqueia TASK-020/021/022 (SPRINT-03). |
 
 ## Limitações vigentes
 
