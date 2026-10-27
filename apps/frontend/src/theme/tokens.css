@@ -1,0 +1,81 @@
+/*
+ * Design tokens — single source (TASK-004). Colour pairs are checked for WCAG contrast by tokens.test.ts.
+ * Dark = Dracula, sampled from prototype/*.png (docs/design/prototype-map.md).
+ * Light = ValueTI white/blue/gold: no frame exists; derived with the same geometry (design extension).
+ * Divergence: frames use Dracula "comment" #6272a4 for secondary text (1.94:1 on cards); muted text is
+ * lightened to keep CA27, and purple text on cards uses a lighter tint of the primary.
+ */
+:root {
+  --font-ui: 'Poppins', system-ui, sans-serif;
+  --font-display: 'Source Serif 4', Georgia, serif;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-md: 0.9375rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-display: 2.25rem;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-pill: 999px;
+
+  --sidebar-width: 224px;
+  --player-height: 105px;
+  --control-height: 40px;
+  --focus-width: 3px;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-bg: #282a36;
+  --color-bg-sidebar: #21222c;
+  --color-surface: #44475a;
+  --color-surface-sunken: #343746;
+  --color-border: #6272a4;
+  --color-input-border: #c3c8e6;
+  --color-text: #f8f8f2;
+  --color-text-muted: #b6bde6;
+  --color-primary: #bd93f9;
+  --color-on-primary: #282a36;
+  --color-accent-text: #bd93f9;
+  --color-accent-text-on-surface: #d2b6fb;
+  --color-success: #50fa7b;
+  --color-warning: #ffb86c;
+  --color-danger: #ffa3a3;
+  --color-info: #8be9fd;
+  --color-focus: #8be9fd;
+  --color-cover-a: #50fa7b;
+  --color-cover-b: #8be9fd;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --color-bg: #f6f8fc;
+  --color-bg-sidebar: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-sunken: #eef2f9;
+  --color-border: #cfd8e6;
+  --color-input-border: #6b778d;
+  --color-text: #142033;
+  --color-text-muted: #4a5873;
+  --color-primary: #1d4fa3;
+  --color-on-primary: #ffffff;
+  --color-accent-text: #1d4fa3;
+  --color-accent-text-on-surface: #1d4fa3;
+  --color-success: #1f7a3d;
+  --color-warning: #8a5f00;
+  --color-danger: #b42318;
+  --color-info: #0e6680;
+  --color-focus: #8a5f00;
+  --color-cover-a: #e2b443;
+  --color-cover-b: #1d4fa3;
+}
