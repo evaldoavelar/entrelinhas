@@ -5,6 +5,7 @@ import { routes } from '../../app/router';
 import { SessionProvider } from '../../app/session';
 import { db } from '../../mocks/db';
 import { setScenario } from '../../mocks/scenario';
+import { api } from '../../api';
 
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ['Date'] });
@@ -175,6 +176,32 @@ describe('review TASK-012 r1', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('Não foi possível salvar o modo de exibição');
     expect(within(group).getByRole('button', { name: 'Cards' })).toHaveAttribute('aria-pressed', 'true');
     expect(await siteList()).toHaveAttribute('data-view', 'cards');
+  });
+
+  test('overlapping failed view changes fall back to the saved mode (r2 #1)', async () => {
+    renderLibrary();
+    await siteList();
+    const rejects: ((e: Error) => void)[] = [];
+    const spy = vi.spyOn(api, 'updatePreferences').mockImplementation(() => new Promise((_, reject) => rejects.push(reject)));
+    const group = screen.getByRole('group', { name: 'Modo de exibição' });
+    await userEvent.click(within(group).getByRole('button', { name: 'Lista' }));
+    await userEvent.click(within(group).getByRole('button', { name: 'Compactos' }));
+    rejects[0]?.(new Error('503'));
+    rejects[1]?.(new Error('503'));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Não foi possível salvar o modo de exibição');
+    expect(within(group).getByRole('button', { name: 'Cards' })).toHaveAttribute('aria-pressed', 'true');
+    spy.mockRestore();
+  });
+
+  test('leaving the sort menu by Shift+Tab then Tab closes it (r2 #2)', async () => {
+    renderLibrary();
+    await siteList();
+    const sortButton = screen.getByRole('button', { name: /^Ordenar:/ });
+    await userEvent.click(sortButton);
+    await userEvent.tab({ shift: true });
+    expect(sortButton).toHaveFocus();
+    await userEvent.tab();
+    expect(screen.queryByRole('menu', { name: 'Ordenar biblioteca' })).toBeNull();
   });
 
   test('Tab out of the sort menu closes it (#4)', async () => {

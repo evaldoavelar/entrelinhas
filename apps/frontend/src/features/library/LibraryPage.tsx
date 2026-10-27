@@ -80,15 +80,24 @@ export function LibraryPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- setParam is stable in behaviour; q drives re-sync
   }, [searchText, q]);
 
-  // Optimistic switch; a preference that could not be saved is reverted so RF39 never lies.
+  // Optimistic switch. Only the latest change may revert, and it reverts to the last mode the server
+  // confirmed, so overlapping failures never leave an unsaved mode on screen (RF39).
+  const confirmedView = useRef(savedView);
+  const latestViewRequest = useRef(0);
   const chooseView = (next: LibraryView) => {
-    const previous = view;
+    const request = ++latestViewRequest.current;
     setView(next);
     setViewError('');
-    updatePreferences({ library_view: next }).catch(() => {
-      setView(previous);
-      setViewError('Não foi possível salvar o modo de exibição. Tente de novo.');
-    });
+    updatePreferences({ library_view: next }).then(
+      () => {
+        confirmedView.current = next;
+      },
+      () => {
+        if (request !== latestViewRequest.current) return;
+        setView(confirmedView.current);
+        setViewError('Não foi possível salvar o modo de exibição. Tente de novo.');
+      },
+    );
   };
 
   const empty = sites.status === 'ready' && sites.total === 0;

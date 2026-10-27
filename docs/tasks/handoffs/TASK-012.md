@@ -45,3 +45,8 @@ Frames (sha256 prefixo): 01 `c0af61b48c8cfc42`, 02 `fbabbcb1a1f89fc4`, 03 `cc96d
 
 Após correções: `npm run verify` exit 0 (180 testes frontend, 52 e2e, baselines inalteradas); diff 100% linhas / 88,89% branches.
 Pendência fora do escopo registrada no STATUS: o toggle de tema do `AppShell` (TASK-005) também usa `void updatePreferences` sem tratar falha.
+
+## Revisão Codex r2 (REPROVADO) → correções (RED antes)
+
+1. Reversões sobrepostas (Lista e Compactos falhando em sequência) deixavam um modo não salvo: só a troca mais recente reverte, e para o último modo **confirmado** pelo servidor. RED: `…overlapping failed view changes fall back to the saved mode (r2 #1)` (`aria-pressed` de Cards não era `true`).
+2. `Shift+Tab` até o botão e depois `Tab` deixava o menu aberto: listener `focusout` no contêiner (botão + painel) fecha o menu quando o foco sai de ambos. RED: `…leaving the sort menu by Shift+Tab then Tab closes it (r2 #2)`.

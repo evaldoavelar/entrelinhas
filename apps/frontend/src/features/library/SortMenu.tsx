@@ -29,6 +29,7 @@ interface SortMenuProps {
 export function SortMenu({ sort, order, onChange }: SortMenuProps) {
   const [open, setOpen] = useState(false);
   const button = useRef<HTMLButtonElement>(null);
+  const root = useRef<HTMLDivElement>(null);
   const menu = useRef<HTMLDivElement>(null);
   const id = useId();
   const sortLabel = SORTS.find((s) => s.value === sort)?.label;
@@ -36,6 +37,18 @@ export function SortMenu({ sort, order, onChange }: SortMenuProps) {
 
   useEffect(() => {
     if (open) menu.current?.querySelector<HTMLElement>('[aria-checked="true"]')?.focus();
+  }, [open]);
+
+  // Focus leaving both the button and the panel (Tab, Shift+Tab, click elsewhere) closes the menu
+  // without pulling focus back.
+  useEffect(() => {
+    const container = root.current;
+    if (!open || !container) return;
+    const onFocusOut = (e: FocusEvent) => {
+      if (!container.contains(e.relatedTarget as Node | null)) setOpen(false);
+    };
+    container.addEventListener('focusout', onFocusOut);
+    return () => container.removeEventListener('focusout', onFocusOut);
   }, [open]);
 
   const close = () => {
@@ -57,7 +70,7 @@ export function SortMenu({ sort, order, onChange }: SortMenuProps) {
   };
 
   return (
-    <div className="sort-menu">
+    <div ref={root} className="sort-menu">
       <button
         ref={button}
         type="button"
@@ -81,11 +94,6 @@ export function SortMenu({ sort, order, onChange }: SortMenuProps) {
           aria-label="Ordenar biblioteca"
           className="sort-menu__panel"
           onKeyDown={onKeyDown}
-          onBlur={(e) => {
-            // Tab or a click elsewhere leaves the menu: close it without pulling focus back.
-            const next = e.relatedTarget as Node | null;
-            if (!menu.current?.contains(next) && next !== button.current) setOpen(false);
-          }}
         >
           <p className="sort-menu__group" aria-hidden="true">
             Ordenar por
