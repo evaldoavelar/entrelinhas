@@ -130,6 +130,16 @@ describe('review TASK-005', () => {
     expect(screen.getByRole('main')).toHaveFocus();
   });
 
+  test('choosing the current page in the menu still moves focus to the page (re-review #3)', async () => {
+    signedIn();
+    renderApp('/library');
+    await userEvent.click(await screen.findByRole('button', { name: 'Menu' }));
+    within(screen.getByRole('navigation', { name: 'Menu do perfil' })).getByRole('link', { name: 'Biblioteca' }).focus();
+    await userEvent.keyboard('{Enter}');
+    expect(screen.queryByRole('navigation', { name: 'Menu do perfil' })).toBeNull();
+    expect(screen.getByRole('main')).toHaveFocus();
+  });
+
   test('other keys keep the menu open; the button toggles it closed', async () => {
     signedIn();
     renderApp('/library');

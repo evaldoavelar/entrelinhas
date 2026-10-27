@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import { NavLink, Outlet, useLocation } from 'react-router';
+import { NavLink, Outlet } from 'react-router';
 import { Avatar, Badge, Button, Icon, IconButton, Toggle, type IconName } from '../components';
 import type { Session } from '@entrelinhas/contracts';
 import { useSession } from './session';
@@ -63,15 +63,13 @@ export function AppShell() {
   const menuId = useId();
   const menuButton = useRef<HTMLButtonElement>(null);
   const main = useRef<HTMLElement>(null);
-  const focusMainAfterNavigation = useRef(false);
-  const { pathname } = useLocation();
+  // Bumped on every choice in the mobile menu, including the current page (pathname unchanged).
+  const [mainFocusRequest, setMainFocusRequest] = useState(0);
 
   // After choosing a destination in the mobile menu the focused link unmounts; move focus to the page.
   useEffect(() => {
-    if (!focusMainAfterNavigation.current) return;
-    focusMainAfterNavigation.current = false;
-    main.current?.focus();
-  }, [pathname]);
+    if (mainFocusRequest > 0) main.current?.focus();
+  }, [mainFocusRequest]);
 
   // Escape closes the menu wherever focus is (button or panel) and returns focus to the button.
   useEffect(() => {
@@ -121,7 +119,7 @@ export function AppShell() {
           <NavItems
             unread={unread}
             onNavigate={() => {
-              focusMainAfterNavigation.current = true;
+              setMainFocusRequest((n) => n + 1);
               setMenuOpen(false);
             }}
           />
