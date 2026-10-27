@@ -22,13 +22,13 @@ Fonte consolidada de progresso. Conferir sempre contra `git log`/`git worktree l
 
 | Tarefa | Estado | Onde | Pendência concreta |
 | --- | --- | --- | --- |
-| TASK-012 biblioteca | review — r1 **reprovado** (4 achados, corrigidos em `e393af0`), r2 em andamento | branch `task/TASK-012-library` (`e393af0`), worktree `../entrelinhas-wt/TASK-012` | CSS, e2e e 16 baselines revisadas prontos; `main` mesclada com TASK-010; verify verde (176 testes, 52 e2e). Após aprovação: integrar. Handoff `docs/tasks/handoffs/TASK-012.md`. |
-| TASK-011 login admin | running — **worker agy** (1ª tarefa do agy) | branch `task/TASK-011-admin-login`, worktree `../entrelinhas-wt/TASK-011` | Aguardar handoff; líder revisa, roda e2e, gera/revisa baselines, liga `/admin/login` e cria `/admin`. Verificar se o agy conseguiu comitar (`--add-dir .git`). |
+| TASK-012 biblioteca | review — Codex r1 e r2 reprovadas (6 achados, todos corrigidos com RED; `e393af0`, `e8afeeb`); r3 Codex interrompida por limite de uso → r3 com **agy** em andamento | branch `task/TASK-012-library` (`e8afeeb`), worktree `../entrelinhas-wt/TASK-012` | verify verde (182 testes, 52 e2e). Integrar após aprovação. |
+| TASK-011 login admin | review — implementado pelo **agy** (`a239257`), revisado pelo Claude (aprovado), integrado na branch pelo líder (`c5a1285`: rotas, e2e, baselines) | branch `task/TASK-011-admin-login`, worktree `../entrelinhas-wt/TASK-011` | Falta revisão independente das mudanças do líder (Codex após 15:04 — limite de uso). verify verde (155 testes, 40 e2e). |
 | TASK-013, 014 | planned | — | dependem da TASK-012 integrada |
 
 ## Limitações vigentes
 
-- Toggle de tema do `AppShell` não tratava falha ao salvar (análogo ao #3 da revisão r1 da TASK-012): corrigido com teste RED; revisão Codex pendente.
+- Toggle de tema do `AppShell` não tratava falha ao salvar: corrigido em `cf44555` com teste RED; revisão (agy) em andamento.
 
 - Todo comportamento de servidor é **simulado** (MSW). Nada de backend, sandbox, TLS, Telegram, Push, MCP ou agy-runner existe.
 - agy liberado e verificado (skills, AGENTS.md, leitura de PNG); escrita em worktree/porta ainda não verificadas.

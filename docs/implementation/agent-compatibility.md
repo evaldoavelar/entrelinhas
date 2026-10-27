@@ -54,3 +54,9 @@ Máximo inicial: 2 workers de implementação + líder. RAM livre medida ~3 GiB:
 - Sandbox `workspace-write` não grava o diretório Git de um worktree (fica em `<repo>/.git/worktrees/`): `git add` falhou com `Read-only file system`. Mitigação: passar `--add-dir <repo>/.git` ao lançar o worker; até verificar, o líder comita o trabalho do worker na branch da tarefa, com atribuição `Co-Authored-By: Codex`.
 - Sandbox recusa abrir porta local (`EPERM` em 4174): Playwright não roda dentro do worker. O líder executa o e2e na integração.
 - Como revisor `read-only`, Vitest não inicia (`EROFS` ao criar arquivo temporário); revisões Codex não reexecutam a suíte, o líder reexecuta.
+
+## Limites observados (27/10, sessão 2)
+
+- **Codex:** limite de uso da conta atingido às ~12:49 (`ERROR: You've hit your usage limit … try again at 3:04 PM`) durante a revisão r3 da TASK-012 e a revisão do toggle de tema; nenhum veredito foi produzido. Revisões redistribuídas ao agy (somente leitura) enquanto durar o limite.
+- **agy como worker (TASK-011):** comitou no worktree com `--add-dir <repo>/.git`. Em `--mode auto` aprovou sozinho sair do sandbox para abrir porta (Playwright) — contraria a política; próximas delegações: `--mode accept-edits --sandbox` e instrução explícita de não sair do sandbox; o líder roda o e2e.
+- **agy como revisor:** `agy --mode plan --sandbox -p "…" < /dev/null`.
