@@ -104,9 +104,12 @@ describe('isolation', () => {
     vi.spyOn(console, 'error').mockImplementation((...args: unknown[]) => {
       logged.push(args.map(String).join(' '));
     });
-    const err = await failure(api.listCategories());
-    expect(err).toBeInstanceOf(ApiError);
-    expect(err).toMatchObject({ code: 'network_error' });
+    // A route that will never be mocked, so the test does not depend on which features exist.
+    const err = await fetch(new URL('/v1/rota-inexistente', location.origin)).then(
+      () => undefined,
+      (e: unknown) => e,
+    );
+    expect(err).toBeInstanceOf(TypeError);
     expect(logged.join('\n')).toMatch(/\[MSW\].*without a matching request handler/);
   });
 
