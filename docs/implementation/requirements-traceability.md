@@ -21,7 +21,7 @@ Colunas: requisito → tarefas → testes → estado → natureza da evidência.
 | RF04 | TASK-012 | `features/library/LibraryPage.test.tsx`, `useSites.test.ts`, `e2e/library.spec.ts` | done | simulado na UI |
 | RF05 | TASK-012 | `features/library/LibraryPage.test.tsx`, `useSites.test.ts`, `e2e/library.spec.ts` | done | simulado na UI |
 | RF06 | TASK-012 (exibição); S10+ (regra) | — | planned | real pendente |
-| RF07 | TASK-012, TASK-014 | — | planned | simulado na UI |
+| RF07 | TASK-012, TASK-014 | TASK-014: `features/site/*.test.*`, `mocks/handlers/site.test.ts`, `e2e/site.spec.ts` | integrado (`c07dfd0`) | simulado na UI |
 | RF08 | TASK-031 | — | planned | simulado na UI |
 | RF09 | S10+ | — | planned | real pendente |
 | RF10 | TASK-031 (aviso); S10+ | — | planned | real pendente |
@@ -38,7 +38,7 @@ Colunas: requisito → tarefas → testes → estado → natureza da evidência.
 | RF21 | TASK-051 (config UI); S10+ fase 7 | — | planned | real pendente |
 | RF22 | TASK-051 (UI); S10+ | — | planned | real pendente |
 | RF23 | TASK-020 | — | planned | simulado na UI |
-| RF24 | TASK-014, TASK-021 | — | planned | simulado na UI |
+| RF24 | TASK-014, TASK-021 | TASK-014: `features/site/SiteDetailPage.test.tsx`, `e2e/site.spec.ts` | parcial (TASK-021 pendente) | simulado na UI |
 | RF25 | TASK-050 | — | planned | simulado na UI |
 | RF26 | TASK-021 (exibição); S10+ | — | planned | real pendente |
 | RF27 | TASK-020, TASK-051 | — | planned | simulado na UI |
