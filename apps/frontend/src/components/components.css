@@ -1,0 +1,194 @@
+/* Base components. Geometry from the frames: buttons/inputs 40px high, radius 8px; cards radius 12px. */
+.el-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--control-height);
+  padding: 0 var(--space-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font: 500 var(--text-md) / 1 var(--font-ui);
+  cursor: pointer;
+}
+.el-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.el-button--primary {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+.el-button--secondary {
+  background: var(--color-surface);
+  border-color: var(--color-input-border);
+  color: var(--color-text);
+}
+.el-button--danger {
+  background: var(--color-surface-sunken);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+.el-button--ghost {
+  background: transparent;
+  color: var(--color-accent-text);
+  padding: 0 var(--space-2);
+}
+
+.el-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+}
+.el-card__title {
+  font: 600 var(--text-lg) / 1.3 var(--font-ui);
+  margin-bottom: var(--space-4);
+}
+
+.el-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-sunken);
+  font-size: var(--text-xs);
+  color: var(--color-text);
+}
+.el-chip--accent {
+  color: var(--color-accent-text);
+}
+.el-chip--success {
+  color: var(--color-success);
+}
+.el-chip--warning {
+  color: var(--color-warning);
+}
+.el-chip--danger {
+  color: var(--color-danger);
+}
+.el-chip--info {
+  color: var(--color-info);
+}
+
+.el-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.el-callout {
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4);
+}
+.el-callout__title {
+  font-weight: 500;
+  color: var(--color-accent-text);
+}
+.el-callout--warning .el-callout__title {
+  color: var(--color-warning);
+}
+.el-callout--danger .el-callout__title {
+  color: var(--color-danger);
+}
+.el-callout__body {
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.el-avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
+  color: var(--color-accent-text);
+  font-weight: 600;
+  font-size: var(--text-lg);
+}
+
+.el-field {
+  display: grid;
+  gap: var(--space-2);
+}
+.el-field__label {
+  font-size: var(--text-md);
+}
+.el-field__hint {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.el-field__error {
+  font-size: var(--text-sm);
+  color: var(--color-danger);
+}
+.el-input {
+  min-height: var(--control-height);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+.el-input[aria-invalid='true'] {
+  border-color: var(--color-danger);
+}
+
+.el-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.el-toggle__text {
+  display: grid;
+}
+.el-toggle__description {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.el-toggle__switch {
+  position: relative;
+  flex: none;
+  width: 40px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-sunken);
+  cursor: pointer;
+}
+.el-toggle__switch[aria-checked='true'] {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.el-toggle__thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-input-border);
+  transition: transform 120ms ease;
+}
+.el-toggle__switch[aria-checked='true'] .el-toggle__thumb {
+  transform: translateX(16px);
+  background: var(--color-text);
+}
+
+.el-icon {
+  flex: none;
+}

@@ -38,6 +38,9 @@ const textPairs: [string, string][] = [
   ['--color-on-primary', '--color-primary'],
 ];
 const uiPairs: [string, string][] = [
+  // Card/panel outline against the page it sits on (review 94dcddf): needed to identify panels,
+  // especially in the light theme where card and page are both near white.
+  ['--color-border', '--color-bg'],
   ['--color-input-border', '--color-surface'],
   ['--color-input-border', '--color-bg'],
   ['--color-focus', '--color-bg'],

@@ -1,6 +1,10 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
+import './theme/fonts';
+import './theme/tokens.css';
+import './theme/global.css';
+import './components/components.css';
 
 async function enableMocking() {
   // Statically false in production builds, so the mock module is dropped from the bundle.
