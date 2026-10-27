@@ -152,3 +152,12 @@ test('diff parser skips deleted files', () => {
   const diff = ['diff --git a/x.ts b/x.ts', 'deleted file mode 100644', '--- a/x.ts', '+++ /dev/null', '@@ -1 +0,0 @@', '-a'].join('\n');
   assert.deepEqual(parseUnifiedDiff(diff, '/root'), {});
 });
+
+test('diff counts every arm of a branch whose condition is on a changed line (review 2 #A)', () => {
+  const fc = fileCov('/p/src/a.ts', 2, 2, { branches: [[1, 0]] });
+  fc.branchMap[0].loc = { start: { line: 1, column: 0 } };
+  fc.branchMap[0].locations = [{ start: { line: 1, column: 4 } }, { start: { line: 2, column: 0 } }];
+  const r = diffCoverage(report(fc), { '/p/src/a.ts': [1] });
+  assert.equal(r.ok, false);
+  assert.match(r.note, /branches 1\/2/);
+});

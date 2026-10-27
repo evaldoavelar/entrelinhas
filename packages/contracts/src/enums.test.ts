@@ -39,9 +39,10 @@ test.each([
   expect([...values]).toEqual(inlineValues(label));
 });
 
-test('visibility values match §1', () => {
-  expect(spec).toContain('Visibilidade: household e private_to_profile.');
-  expect([...enums.VISIBILITIES]).toEqual(['household', 'private_to_profile']);
+test('visibility values match §1 (parsed from the spec sentence, review 2 #B2)', () => {
+  const match = /Visibilidade: ([a-z_, ]+(?: e [a-z_]+)?)\./.exec(spec);
+  if (!match?.[1]) throw new Error('frase de visibilidade não encontrada em §1');
+  expect([...enums.VISIBILITIES]).toEqual(match[1].split(/, | e /).map((v) => v.trim()));
 });
 
 test('zod schemas accept canonical values and reject unknown ones', () => {

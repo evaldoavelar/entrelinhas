@@ -97,14 +97,15 @@ export function diffCoverage(report, changedLines) {
       lines.total += 1;
       if (executable.get(line) > 0) lines.covered += 1;
     }
-    // A branch arm counts when it starts on a changed line (falls back to the branch's own location).
+    // A branch is in the diff when its condition or any of its arms starts on a changed line;
+    // then every arm counts, so a changed condition cannot hide an untested path on another line.
     for (const [id, branch] of Object.entries(fc.branchMap)) {
-      branch.locations.forEach((loc, arm) => {
-        const line = loc?.start?.line ?? branch.loc?.start?.line;
-        if (!changedSet.has(line)) return;
+      const lines = [branch.loc?.start?.line, ...branch.locations.map((loc) => loc?.start?.line)];
+      if (!lines.some((line) => changedSet.has(line))) continue;
+      for (const hits of fc.b[id]) {
         branches.total += 1;
-        if (fc.b[id][arm] > 0) branches.covered += 1;
-      });
+        if (hits > 0) branches.covered += 1;
+      }
     }
   }
   if (lines.total === 0 && branches.total === 0) return { ok: true, note: 'diff: N/A (nenhuma linha executável alterada)' };

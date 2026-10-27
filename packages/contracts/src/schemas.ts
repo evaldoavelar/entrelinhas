@@ -144,9 +144,47 @@ export type SearchQuery = z.input<typeof SearchQuery>;
 export const SnippetSegment = z.strictObject({ text: z.string().max(400), highlight: z.boolean() });
 export const SearchResult = z.strictObject({
   post: Post,
-  match: z.strictObject({
-    field: z.enum(['title', 'summary', 'body', 'tags']),
-    snippet: z.array(SnippetSegment).max(20),
-  }),
+  match_field: z.enum(['title', 'summary', 'body', 'tags']),
+  snippet: z.array(SnippetSegment).max(20),
 });
 export type SearchResult = z.infer<typeof SearchResult>;
+
+export const SitePostsQuery = z.strictObject({
+  filter: z.enum(['all', 'unheard']).default('all'),
+  cursor: z.string().max(512).optional(),
+  limit: z.int().min(1).max(50).default(20),
+});
+export type SitePostsQuery = z.input<typeof SitePostsQuery>;
+
+export const ProfileList = z.strictObject({ items: z.array(ProfilePublic) });
+export const CategoryList = z.strictObject({ items: z.array(Category) });
+
+// Article detail and playback (RF11, RF19, RF25–RF27, RF30)
+
+export const HttpUrl = z.url({ protocol: /^https?$/ }).max(2048);
+
+export const Voice = z.strictObject({ id: Id, name: z.string().max(80), language: z.string().max(16) });
+export type Voice = z.infer<typeof Voice>;
+
+export const Article = Post.extend({
+  summary: z.string().max(2000).nullable(),
+  // Captures use an extractive (excerpt) summary on the local route (ADR-06).
+  summary_kind: z.enum(['abstractive', 'extractive']).nullable(),
+  source_url: HttpUrl,
+  voice: Voice.nullable(),
+  // How image descriptions were produced: vision model, textual fallback, or none (RF25, RF33).
+  vision: z.enum(['model', 'textual', 'none']),
+  image_descriptions: z
+    .array(z.strictObject({ position_seconds: z.int().nonnegative(), label: z.string().max(200), text: z.string().max(2000) }))
+    .max(100),
+  audio_url: z.string().regex(/^\/v1\/assets\/[A-Za-z0-9_-]+\/[A-Za-z0-9_.-]+$/).nullable(),
+});
+export type Article = z.infer<typeof Article>;
+
+export const PlaybackProgress = z.strictObject({
+  post_id: Id,
+  asset_id: Id,
+  position_seconds: z.number().nonnegative().max(86_400),
+  rate: z.number().min(0.5).max(3),
+});
+export type PlaybackProgress = z.infer<typeof PlaybackProgress>;
