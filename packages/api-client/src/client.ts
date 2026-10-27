@@ -87,9 +87,14 @@ function pathId(id: string): string {
   return encodeURIComponent(parseInput(Id, id));
 }
 
+// Retry-After may be delta-seconds or an HTTP-date (RFC 9110 §10.2.3).
 function retryAfter(header: string | null, body: number | undefined): number | undefined {
-  const seconds = header === null ? NaN : Number(header);
-  return Number.isFinite(seconds) && seconds >= 0 ? seconds : body;
+  if (header === null) return body;
+  const seconds = Number(header);
+  if (header.trim() !== '' && Number.isFinite(seconds) && seconds >= 0) return seconds;
+  const date = Date.parse(header);
+  if (Number.isNaN(date)) return body;
+  return Math.max(0, Math.ceil((date - Date.now()) / 1000));
 }
 
 export function createApiClient(options: ApiClientOptions = {}) {
@@ -109,7 +114,15 @@ export function createApiClient(options: ApiClientOptions = {}) {
     const timeout = AbortSignal.timeout(timeoutMs);
     const signal = spec.signal ? AbortSignal.any([spec.signal, timeout]) : timeout;
 
+    // Any failure while the exchange is in flight (headers or body) leaves the outcome unknown.
+    const transportError = () => {
+      if (spec.signal?.aborted) return new ApiError({ status: 0, code: 'aborted', message: 'Pedido cancelado', outcomeUnknown: true });
+      if (timeout.aborted) return new ApiError({ status: 0, code: 'timeout', message: 'O servidor não respondeu a tempo', outcomeUnknown: true });
+      return new ApiError({ status: 0, code: 'network_error', message: 'Sem conexão com o servidor', outcomeUnknown: true });
+    };
+
     let response: Response;
+    let text: string;
     try {
       response = await fetchImpl(url.toString(), {
         method: spec.method,
@@ -121,14 +134,21 @@ export function createApiClient(options: ApiClientOptions = {}) {
         referrerPolicy: 'no-referrer',
         signal,
       });
+      text = await response.text();
     } catch {
-      if (spec.signal?.aborted) throw new ApiError({ status: 0, code: 'aborted', message: 'Pedido cancelado', outcomeUnknown: true });
-      if (timeout.aborted) throw new ApiError({ status: 0, code: 'timeout', message: 'O servidor não respondeu a tempo', outcomeUnknown: true });
-      throw new ApiError({ status: 0, code: 'network_error', message: 'Sem conexão com o servidor', outcomeUnknown: true });
+      throw transportError();
     }
 
+    const json = (): unknown => {
+      try {
+        return JSON.parse(text);
+      } catch {
+        return undefined;
+      }
+    };
+
     if (!response.ok) {
-      const parsed = ApiErrorBody.safeParse(await response.json().catch(() => null));
+      const parsed = ApiErrorBody.safeParse(json());
       const body = parsed.success ? parsed.data.error : undefined;
       throw new ApiError({
         status: response.status,
@@ -138,8 +158,9 @@ export function createApiClient(options: ApiClientOptions = {}) {
       });
     }
 
-    if (spec.response === null || response.status === 204) return undefined as T;
-    const result = spec.response.safeParse(await response.json().catch(() => undefined));
+    // Only routes declared without a response body may succeed empty; a 204 elsewhere is a contract violation.
+    if (spec.response === null) return undefined as T;
+    const result = spec.response.safeParse(json());
     if (!result.success) {
       throw new ApiError({ status: response.status, code: 'invalid_response', message: 'Resposta fora do contrato v1' });
     }

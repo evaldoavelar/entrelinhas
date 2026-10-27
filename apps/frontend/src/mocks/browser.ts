@@ -1,5 +1,6 @@
 import { setupWorker } from 'msw/browser';
 import { handlers } from './handlers';
+import { unhandledApiGuard } from './guard';
 import { db } from './db';
 import { parseScenario, setScenario } from './scenario';
 
@@ -9,12 +10,6 @@ export async function startMockWorker(location: Location) {
   const params = new URLSearchParams(location.search);
   setScenario(parseScenario(params.get('scenario')));
   db.sessionProfileId = params.get('mockSession');
-  await setupWorker(...handlers).start({
-    quiet: true,
-    onUnhandledFrame({ frame, defaults }) {
-      // Any API call without a handler is an error; static assets pass through.
-      const request = (frame.data as { request?: Request } | undefined)?.request;
-      if (request && new URL(request.url).pathname.startsWith('/v1/')) defaults.error();
-    },
-  });
+  // The guard comes last so unhandled /v1 calls never leave the browser; static assets bypass.
+  await setupWorker(...handlers, unhandledApiGuard).start({ quiet: true, onUnhandledFrame: 'bypass' });
 }

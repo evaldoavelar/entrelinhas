@@ -12,7 +12,7 @@ import { HttpResponse } from 'msw';
 import { db, preferencesOf } from '../db';
 import { HOUSEHOLD_PASSWORD, MOCK_NOW, profiles } from '../fixtures';
 import { ok, readBody } from '../respond';
-import { errorResponse, scenarioOverride } from '../scenario';
+import { errorResponse, getScenario, scenarioOverride } from '../scenario';
 
 // SIMULATED authentication: no real secrets or isolation (ADR-12). Mirrors the contract only.
 
@@ -57,7 +57,7 @@ export const sessionHandlers = [
     return new HttpResponse(null, { status: 204 });
   }),
 
-  http.get('/v1/profiles/public', async () => (await scenarioOverride()) ?? ok(ProfileList, { items: profiles })),
+  http.get('/v1/profiles/public', async () => (await scenarioOverride()) ?? ok(ProfileList, { items: getScenario() === 'empty' ? [] : profiles })),
 
   http.patch('/v1/me/preferences', async ({ request }) => {
     const override = await scenarioOverride();

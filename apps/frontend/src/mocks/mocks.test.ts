@@ -128,3 +128,27 @@ describe('fixtures', () => {
     expect(posts.every((p) => p.site_name.length > 0)).toBe(true);
   });
 });
+
+describe('review TASK-003 findings', () => {
+  test('browser guard answers unhandled /v1 routes locally instead of reaching the network (#1)', async () => {
+    const { unhandledApiGuard } = await import('./guard');
+    const logged: string[] = [];
+    vi.spyOn(console, 'error').mockImplementation((...args: unknown[]) => {
+      logged.push(args.map(String).join(' '));
+    });
+    server.use(unhandledApiGuard);
+    expect(await failure(api.listCategories())).toMatchObject({ status: 501, code: 'mock_handler_missing' });
+    expect(logged.join('\n')).toContain('GET /v1/categories');
+  });
+
+  test('guard does not shadow existing handlers when registered last', async () => {
+    const { unhandledApiGuard } = await import('./guard');
+    server.resetHandlers(...(await import('./handlers')).handlers, unhandledApiGuard);
+    await expect(api.listPublicProfiles()).resolves.toMatchObject({ items: expect.any(Array) });
+  });
+
+  test('empty scenario empties list responses (#5)', async () => {
+    setScenario('empty');
+    await expect(api.listPublicProfiles()).resolves.toEqual({ items: [] });
+  });
+});

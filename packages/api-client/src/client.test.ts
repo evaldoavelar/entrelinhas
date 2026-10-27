@@ -147,3 +147,41 @@ describe('errors (plano §8 status mapping)', () => {
     await expect(pending).rejects.toMatchObject({ code: 'aborted' });
   });
 });
+
+describe('review TASK-003 findings', () => {
+  test('Retry-After as HTTP-date becomes seconds from now (#2)', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-10-27T18:00:00Z'));
+    const { fetch } = fakeFetch(() => json({ error: { code: 'rate_limited', message: 'x' } }, 429, { 'Retry-After': 'Tue, 27 Oct 2026 18:00:45 GMT' }));
+    const err = await createApiClient({ baseUrl: base, fetch }).listCategories().catch((e: unknown) => e);
+    vi.useRealTimers();
+    expect(err).toMatchObject({ retryAfterSeconds: 45 });
+  });
+
+  test('past HTTP-date Retry-After means retry now (0)', async () => {
+    const { fetch } = fakeFetch(() => json({ error: { code: 'rate_limited', message: 'x' } }, 429, { 'Retry-After': 'Thu, 01 Jan 2015 00:00:00 GMT' }));
+    const err = await createApiClient({ baseUrl: base, fetch }).listCategories().catch((e: unknown) => e);
+    expect(err).toMatchObject({ retryAfterSeconds: 0 });
+  });
+
+  test('204 on a route that requires a body is invalid_response (#3)', async () => {
+    const { fetch } = fakeFetch(() => new Response(null, { status: 204 }));
+    await expect(createApiClient({ baseUrl: base, fetch }).getSession()).rejects.toMatchObject({ code: 'invalid_response' });
+  });
+
+  test('body read failure after headers is an unknown outcome, not invalid_response (#4)', async () => {
+    const broken = new ReadableStream({
+      start(controller) {
+        controller.error(new TypeError('terminated'));
+      },
+    });
+    const { fetch } = fakeFetch(() => new Response(broken, { status: 200, headers: { 'Content-Type': 'application/json' } }));
+    const err = await createApiClient({ baseUrl: base, fetch }).listCategories().catch((e: unknown) => e);
+    expect(err).toMatchObject({ code: 'network_error', outcomeUnknown: true });
+  });
+
+  test('malformed JSON with 200 stays invalid_response', async () => {
+    const { fetch } = fakeFetch(() => new Response('{"items": [', { status: 200 }));
+    await expect(createApiClient({ baseUrl: base, fetch }).listCategories()).rejects.toMatchObject({ code: 'invalid_response', outcomeUnknown: false });
+  });
+});
