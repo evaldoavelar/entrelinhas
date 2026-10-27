@@ -62,6 +62,14 @@ export function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuId = useId();
   const menuButton = useRef<HTMLButtonElement>(null);
+  const main = useRef<HTMLElement>(null);
+  // Bumped on every choice in the mobile menu, including the current page (pathname unchanged).
+  const [mainFocusRequest, setMainFocusRequest] = useState(0);
+
+  // After choosing a destination in the mobile menu the focused link unmounts; move focus to the page.
+  useEffect(() => {
+    if (mainFocusRequest > 0) main.current?.focus();
+  }, [mainFocusRequest]);
 
   // Escape closes the menu wherever focus is (button or panel) and returns focus to the button.
   useEffect(() => {
@@ -108,12 +116,18 @@ export function AppShell() {
       </header>
       {menuOpen ? (
         <nav id={menuId} aria-label="Menu do perfil" className="shell__mobile-menu">
-          <NavItems unread={unread} onNavigate={() => setMenuOpen(false)} />
+          <NavItems
+            unread={unread}
+            onNavigate={() => {
+              setMainFocusRequest((n) => n + 1);
+              setMenuOpen(false);
+            }}
+          />
           <ProfileControls session={state.session} />
         </nav>
       ) : null}
 
-      <main className="shell__main">
+      <main ref={main} tabIndex={-1} className="shell__main">
         <Outlet />
       </main>
       <nav aria-label="Atalhos" className="shell__tabbar">
