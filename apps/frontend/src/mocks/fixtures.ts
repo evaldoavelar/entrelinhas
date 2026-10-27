@@ -6,7 +6,7 @@ export const MOCK_NOW = '2026-10-27T15:00:00-03:00';
 export const HOUSEHOLD_PASSWORD = 'casa-exemplo';
 
 export const profiles: ProfilePublic[] = [
-  { id: 'prof_evaldo', display_name: 'Evaldo Avelar', initials: 'EA', has_pin: true },
+  { id: 'prof_evaldo', display_name: 'Evaldo', initials: 'EV', has_pin: true },
   { id: 'prof_ana', display_name: 'Ana', initials: 'AN', has_pin: false },
   { id: 'prof_convidado', display_name: 'Convidado', initials: 'CV', has_pin: false },
 ];

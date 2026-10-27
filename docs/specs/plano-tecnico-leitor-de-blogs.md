@@ -15,7 +15,7 @@ CI mínimo e scripts descartáveis de PoC são trabalho do Gate 0, não implemen
 
 ## 2. Stack e implantação proporcional
 
-Stack proposta: Python/FastAPI/Pydantic, PostgreSQL (baseline 18 a confirmar), SQLAlchemy/Alembic; React/TypeScript/Vite, componentes acessíveis, tokens Claro ValueTI/Dracula. Compose; Actions/GHCR propostos. Sem Redis, Elasticsearch ou Kubernetes obrigatórios.
+Stack proposta: Python/FastAPI/Pydantic, PostgreSQL (baseline 18 a confirmar), SQLAlchemy/Alembic; React/TypeScript/Vite, componentes acessíveis, tokens Claro/Dracula. Compose; Actions/GHCR propostos. Sem Redis, Elasticsearch ou Kubernetes obrigatórios.
 
 Baseline de núcleo com OpenRouter: oito serviços, alguns opcionais quando o recurso não é usado. Não instalar todos os serviços/fases desde o dia 1.
 

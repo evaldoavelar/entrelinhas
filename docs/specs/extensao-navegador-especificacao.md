@@ -4,7 +4,7 @@ Data: 25/10/2026. Requisitos v1.4, plano técnico v0.8, decisoes-e-estados.md v0
 
 ## 1. Escopo e experiência
 
-Chromium desktop primeiro; Brave real será qualificado se escolhido no Gate 0. Opera/Firefox são evolução com adaptadores/manifests/testes próprios, não suporte automático. Projeto TypeScript candidato apps/browser-extension, núcleo de URL/API/config/preview separado de BrowserAdapter. Manifest V3 e dependências mínimas; UI pequena com temas Claro ValueTI/Dracula. Build/pacote/versão próprios; Docker pode construir, mas a extensão roda no browser, não no Compose.
+Chromium desktop primeiro; Brave real será qualificado se escolhido no Gate 0. Opera/Firefox são evolução com adaptadores/manifests/testes próprios, não suporte automático. Projeto TypeScript candidato apps/browser-extension, núcleo de URL/API/config/preview separado de BrowserAdapter. Manifest V3 e dependências mínimas; UI pequena com temas Claro/Dracula. Build/pacote/versão próprios; Docker pode construir, mas a extensão roda no browser, não no Compose.
 
 Servidor HTTPS continua configurável conforme RF62, com default de build opcional. Build fixo/policy para uma instalação é variante futura, não remoção da configuração solicitada. Navegador alcança API privada pela LAN/VPN; sem conexão, não abrir porta pública nem usar o domínio de shares como fallback.
 

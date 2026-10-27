@@ -15,7 +15,7 @@ description: Implement or review Entrelinhas screens from the exported PNG frame
 3. Liste o que vê: hierarquia, grid, espaçamentos, tipografia, cores, ícones, estados, densidade.
 4. Reuse tokens/componentes existentes; novo token só via líder.
 5. Implemente com DOM/React reais, acessíveis e ligados aos mocks. **Proibido** usar o PNG como fundo/imagem da tela.
-6. Frames são Dracula (escuro). Tema claro ValueTI (branco/azul/dourado) é derivado dos tokens, mesma geometria — registre como extensão do design.
+6. Frames são Dracula (escuro). Tema claro (branco/azul/dourado) é derivado dos tokens, mesma geometria — registre como extensão do design.
 7. Valide: rode a rota com o cenário MSW correspondente, capture screenshot no viewport do frame (registre dimensões/escala), compare lado a lado com o PNG, corrija diferenças de layout/tipografia/cor.
 8. Divergência necessária (acessibilidade, requisito) → registre em `docs/design/prototype-map.md` § Divergências.
 

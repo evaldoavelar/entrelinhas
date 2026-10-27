@@ -36,7 +36,7 @@ test('signed-in shell shows navigation, current page, profile and unread badge',
   const nav = await screen.findByRole('navigation', { name: 'Principal' });
   expect(within(nav).getByRole('link', { name: 'Biblioteca' })).toHaveAttribute('aria-current', 'page');
   expect(within(nav).getByRole('link', { name: /Notificações/ })).toHaveAccessibleName('Notificações 2 notificações não lidas');
-  expect(screen.getByText('Evaldo Avelar')).toBeInTheDocument();
+  expect(screen.getByText('Evaldo')).toBeInTheDocument();
   expect(screen.getByRole('main')).toBeInTheDocument();
 });
 

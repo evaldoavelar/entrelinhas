@@ -36,7 +36,7 @@ describe('session (simulated)', () => {
 
   test('public profiles list', async () => {
     const { items } = await api.listPublicProfiles();
-    expect(items.map((p) => p.initials)).toEqual(['EA', 'AN', 'CV']);
+    expect(items.map((p) => p.initials)).toEqual(['EV', 'AN', 'CV']);
   });
 
   test('admin login requires username, password and TOTP (simulated)', async () => {

@@ -7,7 +7,7 @@ Fonte complementar: `prototype/Entrelinhas — Leitor de blogs em áudio.figcraf
 ## Observações globais (derivadas dos frames)
 
 - **Tema:** todos os 37 frames são Dracula (escuro). Cores amostradas por pixel: fundo `#282a36`, sidebar/topo público `#21222c`, superfície `#44475a`, superfície rebaixada `#343746`, roxo `#bd93f9` (primário/ativo), verde `#50fa7b`, ciano `#8be9fd`, laranja `#ffb86c`, vermelho Dracula (`#ff5555`, ações destrutivas), texto secundário `#6272a4` (comment), texto principal `#f8f8f2`.
-- **Tema claro ValueTI:** **não há frame**. Extensão do design: mesma geometria, branco/azul/dourado via tokens (TASK-004), registrado como derivação.
+- **Tema claro:** **não há frame**. Extensão do design: mesma geometria, branco/azul/dourado via tokens (TASK-004), registrado como derivação.
 - **Tipografia:** títulos de página em serifa (estilo Source Serif); UI em sans geométrica (Poppins nos frames 19–37; frames 01–15 têm sans geométrica muito próxima). Decisão: Source Serif 4 (display) + Poppins (UI), empacotadas localmente via `@fontsource` (sem CDN, determinístico para screenshots).
 - **Layout desktop 1440×1000:** sidebar fixa 224px (logo, subtítulo, navegação, card de status, perfil); conteúdo a partir de x=264 com margem direita 40; título serifado ~36px em y≈97; ação primária no topo direito (200×40, raio 8); barra do player fixa ~105px no rodapé com borda superior.
 - **Admin:** sidebar com rótulo laranja "PAINEL DO ADMINISTRADOR", navegação própria e card "Sessão de administrador · expira após 15 min sem uso"; abas em botões (Imagens, Voz e limpeza, Integrações, Pareamentos, Quotas e backlog, Telegram). Sem barra de player.
@@ -60,7 +60,7 @@ Fonte complementar: `prototype/Entrelinhas — Leitor de blogs em áudio.figcraf
 
 | Lacuna | Derivação |
 | --- | --- |
-| Tema claro ValueTI de todas as telas | Tokens claros, mesma geometria (TASK-004) |
+| Tema claro de todas as telas | Tokens claros, mesma geometria (TASK-004) |
 | Mobile de telas além da biblioteca | Padrão do frame 16: tab bar inferior, mini player, cards em coluna |
 | Estados vazio/carregando/erro 4xx/5xx/429/503 genéricos | Superfície `#343746` com callout; skeletons nas dimensões dos cards |
 | Sessão expirada (401) e perfil bloqueado em rotas privadas | Redirecionar para frames 26/29 com mensagem |

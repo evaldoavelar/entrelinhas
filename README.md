@@ -76,7 +76,7 @@ Para manter seu servidor seguro e confiável, a arquitetura é segregada em micr
 ```yaml
 services:
   frontend:
-    image: ghcr.io/evaldoavelar/entrelinhas-frontend:latest
+    image: ghcr.io/entrelinhas/entrelinhas-frontend:latest
     container_name: entrelinhas-web
     restart: unless-stopped
     ports:
@@ -87,7 +87,7 @@ services:
       - backend
 
   backend:
-    image: ghcr.io/evaldoavelar/entrelinhas-backend:latest
+    image: ghcr.io/entrelinhas/entrelinhas-backend:latest
     container_name: entrelinhas-api
     restart: unless-stopped
     environment:

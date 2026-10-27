@@ -80,6 +80,6 @@ export const sessionHandlers = [
       return errorResponse(401, 'invalid_credentials', 'Usuário, senha ou código incorretos.');
     }
     const expires = new Date(Date.parse(MOCK_NOW) + 15 * 60_000).toISOString();
-    return ok(AdminSession, { admin: { id: 'adm_evaldo', username: 'evaldo', display_name: 'Evaldo Avelar' }, idle_expires_at: expires }, 201);
+    return ok(AdminSession, { admin: { id: 'adm_evaldo', username: 'evaldo', display_name: 'Evaldo' }, idle_expires_at: expires }, 201);
   }),
 ];

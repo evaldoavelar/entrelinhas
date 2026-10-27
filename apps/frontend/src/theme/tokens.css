@@ -1,7 +1,7 @@
 /*
  * Design tokens — single source (TASK-004). Colour pairs are checked for WCAG contrast by tokens.test.ts.
  * Dark = Dracula, sampled from prototype/*.png (docs/design/prototype-map.md).
- * Light = ValueTI white/blue/gold: no frame exists; derived with the same geometry (design extension).
+ * Light = white/blue/gold: no frame exists; derived with the same geometry (design extension).
  * Divergence: frames use Dracula "comment" #6272a4 for secondary text (1.94:1 on cards); muted text is
  * lightened to keep CA27, and purple text on cards uses a lighter tint of the primary.
  */

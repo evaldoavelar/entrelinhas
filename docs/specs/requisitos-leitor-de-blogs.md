@@ -55,7 +55,7 @@ Uma casa, biblioteca comum e perfis de escuta, sem múltiplas famílias/cobranç
 | RF37 | Permitir alternar a visualização do dashboard entre cards, cards compactos e lista. | Solicitado |
 | RF38 | Carregar os itens do dashboard sob demanda, mantendo pesquisa e ordenação sobre o conjunto completo. | Solicitado; consistência de pesquisa/ordenação proposta |
 | RF39 | Preservar o modo de visualização escolhido entre visitas. | Proposta |
-| RF40 | Oferecer tema escuro baseado em Dracula e tema claro branco, dourado e azul alinhado à logo ValueTI fornecida. | Solicitado |
+| RF40 | Oferecer tema escuro baseado em Dracula e tema claro branco, dourado e azul. | Solicitado |
 | RF41 | Permitir alternar temas e salvar a preferência no perfil. | Proposta |
 | RF42 | Atender uma casa com biblioteca compartilhada, senha de escuta e seleção de perfis; capturas privadas têm exceção de visibilidade e desbloqueio individual. | Escopo doméstico confirmado; privacidade da revisão |
 | RF43 | Oferecer troca de perfil e manter progresso, histórico de escuta e playlists separados por perfil. | Seleção solicitada; isolamento proposto |
@@ -109,7 +109,7 @@ Dashboard em cards, compactos e lista; filtros de busca/categoria combinam com o
 
 Player com pausa/retomada, velocidade, fila e voz consistente; download não equivale a ouvido. Playlist referencia artigo lógico e fixa a versão durante a reprodução; indisponível é sinalizado/pulado. Nova voz da mesma versão preserva ouvido lógico; conteúdo alterado ganha versão de consumo própria.
 
-Claro branco/azul/dourado alinhado à logo ValueTI e escuro Dracula, com contraste/foco/teclado e preferência por perfil. “Entrelinhas” continua nome provisório, sem mudança de marca decidida nesta revisão.
+Claro branco/azul/dourado e escuro Dracula, com contraste/foco/teclado e preferência por perfil.
 
 ## 4. Conteúdo, imagens, voz e captura
 
@@ -304,7 +304,7 @@ TDD, cobertura e CI são obrigações desde a fundação. Limites numéricos, ja
 - v0.1: entrada URL, biblioteca por site, automação, tags/capa/resumo, retenção, OpenRouter/MCP.
 - v0.2: descrição narrada de imagens e voz gratuita selecionável.
 - v0.3: análise visual configurável/alternativa textual, Docker, playlists e três visualizações.
-- v0.4: temas ValueTI/Dracula, perfis, links e categorias.
+- v0.4: temas Claro/Dracula, perfis, links e categorias.
 - v0.5: ponte Python/execução agy automática proposta inicialmente por webhook.
 - v0.6: instalação agy/Python em Docker confirmada; coabitação inicialmente proposta.
 - v0.7: defesa contra prompt injection, ponte/runner separados e Slim opcional.

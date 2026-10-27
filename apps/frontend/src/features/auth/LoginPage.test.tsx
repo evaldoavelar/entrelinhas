@@ -25,7 +25,7 @@ function renderLogin(from?: string) {
 test('loads public profiles as an accessible radio group and selects one by keyboard', async () => {
   renderLogin();
   const group = await screen.findByRole('radiogroup', { name: 'Perfil' });
-  const evaldo = within(group).getByRole('radio', { name: 'Evaldo Avelar' });
+  const evaldo = within(group).getByRole('radio', { name: 'Evaldo' });
   const ana = within(group).getByRole('radio', { name: 'Ana' });
   expect(evaldo).toBeChecked();
   expect(screen.getByText(/PIN para capturas privadas/)).toBeInTheDocument();
@@ -95,6 +95,6 @@ test('successful login without return location goes to library', async () => {
   await screen.findByRole('radio', { name: 'Ana' });
   await userEvent.type(screen.getByLabelText('Senha da casa'), 'casa-exemplo');
   await userEvent.click(screen.getByRole('button', { name: 'Entrar' }));
-  expect(await screen.findByText('Destino: Evaldo Avelar')).toBeInTheDocument();
+  expect(await screen.findByText('Destino: Evaldo')).toBeInTheDocument();
   expect(router.state.location.pathname).toBe('/library');
 });

@@ -8,7 +8,7 @@
 | TASK-001 | Harness monorepo (npm workspaces, Vite/React/TS, Vitest coverage gate, ESLint, Playwright, CI) | Claude | Codex | — |
 | TASK-002 | `packages/contracts`: enums canônicos + drift test + schemas v1 iniciais | Claude | Codex | 001 |
 | TASK-003 | `packages/api-client` + MSW (cenários, reset, falha sem handler) | Claude | Codex | 002 |
-| TASK-004 | Tokens Dracula/ValueTI, fontes locais, componentes base | Claude | Codex | 001 |
+| TASK-004 | Tokens Dracula/Claro, fontes locais, componentes base | Claude | Codex | 001 |
 | TASK-005 | AppShell (sidebar, player bar), router, tema por perfil, rota protegida | Claude | Codex | 003, 004 |
 
 Tudo sequencial: altera arquivos de dono único (lockfile, contratos, tokens, router). Integração por tarefa na `main`.
