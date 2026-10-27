@@ -2,7 +2,7 @@
 
 Fonte consolidada de progresso. Conferir sempre contra `git log`/`git worktree list` (RESUME.md).
 
-**Atualizado:** 27/10/2026 · **Sprint atual:** S01 Fundação · **Marco:** G0-F em andamento (TASK-004 parte 2 e TASK-005 restantes).
+**Atualizado:** 27/10/2026 · **Sprint atual:** S01 concluída no código (revisão de TASK-005 pendente) · S02 onda 1 iniciada · **Marco:** G0-F atingido quando a revisão de TASK-005 aprovar.
 
 ## Commits relevantes
 
@@ -14,9 +14,11 @@ Fonte consolidada de progresso. Conferir sempre contra `git log`/`git worktree l
 | TASK-001 harness | `6cb3b22` + correções `c62f027`, `83043f5` | Codex: reprovado 2×, **aprovado** na 3ª revisão |
 | TASK-002 contracts | `1af70b8` + `83043f5` | Codex: reprovado 1×, **aprovado** |
 | TASK-003 api-client + MSW | `3e90ea6`, `142f1d0`, `869e253`, guard `/v1` (commit seguinte) | Codex: reprovado 2× (último achado: prefixo `/v1` corrigido); **re-revisão pendente** |
-| TASK-004 parte 1: tokens + contraste | `94dcddf` | 72 testes de contraste; revisão pendente |
+| TASK-004 tokens + componentes | `94dcddf`, `9519f4c`, correções em `2957501` | Codex: tokens reprovado (borda) → corrigido; componentes reprovado (Badge, describedby, outline/IconButton) → corrigido; re-revisão junto com TASK-005 |
+| TASK-005 shell/router/tema | `2957501` | 127 unit + 16 e2e verdes; evidência visual vs frame 01; revisão Codex em andamento |
+| PW_PORT + instruções TASK-010 | `71af9e5` | — |
 
-Último `npm run verify` verde na `main` após o guard `/v1`: contracts 100%, api-client 98.6% stmts/96.8% branches, frontend 90.1%/89.1%; bundle de produção sem MSW; 8 e2e (4 projetos). Clean checkout em worktree descartável: `npm ci && verify` exit 0 (em `142f1d0`).
+Último `npm run verify` verde na `main` (`2957501`): contracts 100%, api-client 98.6% stmts/96.8% branches, frontend 93.8%/91.1%; bundle de produção sem MSW; 16 e2e (4 projetos). Clean checkout em worktree descartável: `npm ci && verify` exit 0 (em `142f1d0`).
 
 ## Tarefas
 
@@ -24,10 +26,12 @@ Fonte consolidada de progresso. Conferir sempre contra `git log`/`git worktree l
 | --- | --- | --- |
 | TASK-001 | done | Claude/Codex |
 | TASK-002 | done | Claude/Codex |
-| TASK-003 | review (re-revisão do guard `/v1`) | Claude/Codex |
-| TASK-004 | running (falta: fontes locais, componentes base, testes a11y) | Claude/Codex |
-| TASK-005 | planned | Claude/Codex |
-| TASK-010..014 | planned (onda 1 após TASK-005) | ver SPRINT-02 |
+| TASK-003 | done (aprovado após guard `/v1`, `1640572`) | Claude/Codex |
+| TASK-004 | review | Claude/Codex |
+| TASK-005 | review | Claude/Codex |
+| TASK-010 | running — worker **Codex** em `../entrelinhas-wt/TASK-010`, branch `task/TASK-010-login` (base `71af9e5`) | Codex/Claude |
+| TASK-012 | ready (Claude) | Claude/Codex |
+| TASK-011, 013, 014 | planned (onda 2) | ver SPRINT-02 |
 
 ## Limitações vigentes
 
