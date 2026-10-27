@@ -5,7 +5,7 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 import globals from 'globals';
 
 export default tseslint.config(
-  { ignores: ['**/dist/**', '**/coverage/**', 'playwright-report/**', 'test-results/**', '**/mockServiceWorker.js'] },
+  { ignores: ['**/dist/**', '**/dist-mock/**', '**/coverage/**', 'playwright-report/**', 'test-results/**', '**/mockServiceWorker.js'] },
   js.configs.recommended,
   ...tseslint.configs.strict,
   {

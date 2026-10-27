@@ -14,4 +14,6 @@
    ```
 7. Após integrar: atualizar STATUS, traceability e este arquivo se o procedimento mudar.
 
+Próximo passo concreto (27/10): concluir TASK-004 parte 2 (fontes `@fontsource` importadas em `src/theme/fonts.ts`, componentes Button/Card/Chip/Toggle/TextField/Select/Callout/Avatar/ícones em `src/components/` com testes de acessibilidade), pedir revisão Codex (`codex exec -s read-only ...`), depois TASK-005 (AppShell/router/tema). Revisões Codex ficam em `$SCRATCHPAD/review-*.md` (efêmero) — resultado relevante vai para o corpo do commit de correção.
+
 `PROMPT-PARA-CLAUDE.md` (raiz, fora do Git via `.git/info/exclude`) contém a instrução original do usuário.
