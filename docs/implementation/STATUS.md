@@ -24,8 +24,8 @@ Fonte consolidada de progresso. Conferir sempre contra `git log`/`git worktree l
 | Tarefa | Estado | Onde | Pendência concreta |
 | --- | --- | --- | --- |
 | TASK-011 login admin | review — implementado pelo **agy** (`a239257`), revisado pelo Claude (aprovado), integrado na branch pelo líder (`c5a1285`: rotas, e2e, baselines) | branch `task/TASK-011-admin-login`, worktree `../entrelinhas-wt/TASK-011` | Falta revisão independente das mudanças do líder (Codex após 15:04 — limite de uso). verify verde (155 testes, 40 e2e). |
-| TASK-013 busca global | review — revisão **agy** em andamento | branch `task/TASK-013-search`, worktree `../entrelinhas-wt/TASK-013` | verify verde (196 testes, 60 e2e), baselines revisadas. Extraído `features/shared/usePagedList.ts` (reuso pela biblioteca). |
-| TASK-014 detalhe do site | running — **worker agy** (redistribuído: limite Codex) | branch `task/TASK-014-site-detail`, worktree `../entrelinhas-wt/TASK-014` | Aguardar handoff; líder registra handler, liga `/sites/:siteId`, roda e2e e revisa baselines. |
+| TASK-013 busca global | review — agy r1 **reprovado** (5 achados corrigidos; `f48978f` entrou com gate vermelho, corrigido em `5716028`); agy r2 em andamento | branch `task/TASK-013-search`, worktree `../entrelinhas-wt/TASK-013` | verify verde (200 testes, 60 e2e). |
+| TASK-014 detalhe do site | review — worker agy entregou (`d38df19`, comitado pelo líder); **revisão do líder reprovou** (4 achados) | branch `task/TASK-014-site-detail`, worktree `../entrelinhas-wt/TASK-014` | Após integrar TASK-013: mesclar `main`, reusar `usePagedList`, PAGE_SIZE 4 + fixtures do Horizonte (12), cursor por site, a11y; ligar rota; e2e/baselines. |
 
 ## Limitações vigentes
 
