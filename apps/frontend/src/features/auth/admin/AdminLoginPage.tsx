@@ -19,6 +19,11 @@ export function AdminLoginPage() {
     event.preventDefault();
     const sanitizedTotp = totpCode.replace(/\s+/g, '');
     if (!username || !password || !sanitizedTotp || submitting) return;
+    if (!/^\d{6}$/.test(sanitizedTotp)) {
+      setPasskeyNotice('');
+      setError('Informe o código de 6 dígitos do aplicativo autenticador.');
+      return;
+    }
 
     setError('');
     setPasskeyNotice('');

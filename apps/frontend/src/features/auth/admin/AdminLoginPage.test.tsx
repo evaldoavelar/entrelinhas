@@ -225,3 +225,16 @@ test('does nothing if form submit is fired directly with empty fields', () => {
 
   expect(screen.queryByRole('alert')).toBeNull();
 });
+
+test.each(['1', 'abcdef', '1234567', '12 34a6'])('malformed authenticator code "%s" is explained and never sent (review r1)', async (code) => {
+  const spy = vi.spyOn(api, 'createAdminSession');
+  renderAdminLogin();
+  await userEvent.type(screen.getByLabelText('Usuário'), 'evaldo');
+  await userEvent.type(screen.getByLabelText('Senha'), 'admin-exemplo');
+  await userEvent.type(screen.getByLabelText('Código do aplicativo autenticador'), code);
+  await userEvent.click(screen.getByRole('button', { name: 'Entrar' }));
+
+  expect(await screen.findByRole('alert')).toHaveTextContent('Informe o código de 6 dígitos do aplicativo autenticador.');
+  expect(spy).not.toHaveBeenCalled();
+  spy.mockRestore();
+});
