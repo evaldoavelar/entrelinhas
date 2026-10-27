@@ -30,12 +30,15 @@ test('admin link leads to the individual admin login', async ({ page }) => {
   await expect(page).toHaveURL(/\/admin\/login$/);
 });
 
-test('evidence screenshots for frame 26 comparison (TASK-010)', async ({ page }, info) => {
+// Reviewed baselines (frame 26 comparison in docs/tasks/handoffs/TASK-010.md); never auto-updated.
+test('login visual baseline (frame 26, TASK-010)', async ({ page }, info) => {
   await page.goto('/login');
   await expect(page.getByRole('radio', { name: 'Evaldo Avelar' })).toBeChecked();
-  await page.getByLabel('Senha da casa').fill('casa-exemplo');
+  const password = page.getByLabel('Senha da casa');
+  await password.fill('casa-exemplo');
+  await password.blur();
   if (info.project.name.startsWith('light')) {
     await page.evaluate(() => (document.documentElement.dataset.theme = 'light'));
   }
-  await page.screenshot({ path: `docs/design/evidence/TASK-010/login-${info.project.name}.png` });
+  await expect(page).toHaveScreenshot('login.png');
 });
