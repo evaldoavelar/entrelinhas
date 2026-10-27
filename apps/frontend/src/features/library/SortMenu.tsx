@@ -73,7 +73,7 @@ export function SortMenu({ sort, order, onChange }: SortMenuProps) {
         <span className="visually-hidden">{`, ${orders.find((o) => o.value === order)?.label ?? ''}`}</span>
       </button>
       {open ? (
-        <div ref={menu} id={id} role="menu" aria-label="Ordenar biblioteca" className="sort-menu__panel" onKeyDown={onKeyDown}>
+        <div ref={menu} id={id} role="menu" tabIndex={-1} aria-label="Ordenar biblioteca" className="sort-menu__panel" onKeyDown={onKeyDown}>
           <p className="sort-menu__group" aria-hidden="true">
             Ordenar por
           </p>

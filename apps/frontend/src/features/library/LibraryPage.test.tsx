@@ -89,6 +89,15 @@ test('category filter combined with search keeps the URL state (RF45, CA33)', as
   expect(router.state.location.search).toContain('q=submarino');
 });
 
+test('changing the category while a search is pending is not reverted by the debounce', async () => {
+  const router = renderLibrary('/library?q=submarino&category=cat_ciencia');
+  await siteList();
+  await userEvent.clear(screen.getByRole('searchbox', { name: 'Buscar em posts, resumos e tags' }));
+  await userEvent.selectOptions(screen.getByLabelText('Categoria'), '');
+  await waitFor(() => expect(router.state.location.search).not.toContain('q='));
+  expect(router.state.location.search).not.toContain('category=');
+});
+
 test('search finds sites by words only present in posts not yet loaded (CA05, CA23)', async () => {
   renderLibrary('/library?q=submarino');
   await waitFor(async () => expect(siteNames(await siteList()).sort((a, b) => a!.localeCompare(b!, 'pt-BR'))).toEqual(['Ciência Aberta', 'Circuito', 'Horizonte']));

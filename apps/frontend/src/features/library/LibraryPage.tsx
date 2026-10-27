@@ -1,18 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import type { Category, LibraryView, SiteSort, SortOrder } from '@entrelinhas/contracts';
-import { Button, Icon, Select } from '../../components';
+import { Button, Icon, Select, type IconName } from '../../components';
 import { api } from '../../api';
 import { useSession } from '../../app/session';
 import { ContinueBanner } from './ContinueBanner';
 import { SiteCard } from './SiteCard';
 import { SortMenu } from './SortMenu';
 import { useSites } from './useSites';
+import './library.css';
 
-const VIEWS: { value: LibraryView; label: string }[] = [
-  { value: 'cards', label: 'Cards' },
-  { value: 'compact', label: 'Compactos' },
-  { value: 'list', label: 'Lista' },
+// Icons stand in for the labels on mobile (frame 16); the label stays as the accessible name.
+const VIEWS: { value: LibraryView; label: string; icon: IconName }[] = [
+  { value: 'cards', label: 'Cards', icon: 'grid' },
+  { value: 'compact', label: 'Compactos', icon: 'rows' },
+  { value: 'list', label: 'Lista', icon: 'list' },
 ];
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -47,18 +49,20 @@ export function LibraryPage() {
     return () => abort.abort();
   }, []);
 
+  // The search debounce calls setParam from an older render; React Router's functional updater
+  // would start from that render's params and undo a category/sort chosen meanwhile.
+  const latestParams = useRef(params);
+  useEffect(() => {
+    latestParams.current = params;
+  }, [params]);
   const setParam = (changes: Record<string, string | undefined>) => {
-    setParams(
-      (current) => {
-        const next = new URLSearchParams(current);
-        for (const [key, value] of Object.entries(changes)) {
-          if (value) next.set(key, value);
-          else next.delete(key);
-        }
-        return next;
-      },
-      { replace: true },
-    );
+    const next = new URLSearchParams(latestParams.current);
+    for (const [key, value] of Object.entries(changes)) {
+      if (value) next.set(key, value);
+      else next.delete(key);
+    }
+    latestParams.current = next;
+    setParams(next, { replace: true });
   };
 
   useEffect(() => {
@@ -123,10 +127,11 @@ export function LibraryPage() {
               key={v.value}
               type="button"
               aria-pressed={view === v.value}
-              className={`el-button ${view === v.value ? 'el-button--primary' : 'el-button--outline'}`}
+              className={`el-button library__view ${view === v.value ? 'el-button--primary' : 'el-button--outline'}`}
               onClick={() => chooseView(v.value)}
             >
-              {v.label}
+              <Icon name={v.icon} />
+              <span className="library__view-label">{v.label}</span>
             </button>
           ))}
         </div>
