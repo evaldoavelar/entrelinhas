@@ -5,6 +5,8 @@ const PATHS = {
   headphones: 'M4 15v-3a8 8 0 0 1 16 0v3M4 15h3v5H4zM17 15h3v5h-3z',
   home: 'M4 11 12 4l8 7v9h-5v-6h-6v6H4z',
   list: 'M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01',
+  grid: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',
+  rows: 'M4 5h16v6H4zM4 13h16v6H4z',
   rss: 'M5 19h.01M5 12a7 7 0 0 1 7 7M5 5a14 14 0 0 1 14 14',
   bell: 'M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0',
   lock: 'M6 11h12v9H6zM8 11V8a4 4 0 0 1 8 0v3',

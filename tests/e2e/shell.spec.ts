@@ -51,5 +51,6 @@ test('evidence screenshots for frame comparison (TASK-005)', async ({ page }, in
     else await page.evaluate(() => (document.documentElement.dataset.theme = 'light'));
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   }
-  await page.screenshot({ path: `docs/design/evidence/TASK-005/shell-${info.project.name}.png` });
+  // Written to test-results: the reviewed copies in docs/design/evidence/TASK-005 are never overwritten by a run.
+  await page.screenshot({ path: info.outputPath(`shell-${info.project.name}.png`) });
 });
