@@ -22,10 +22,13 @@ Fonte consolidada de progresso. Conferir sempre contra `git log`/`git worktree l
 
 | Tarefa | Estado | Onde | Pendência concreta |
 | --- | --- | --- | --- |
-| TASK-012 biblioteca | running (Claude) | branch `task/TASK-012-library` (`1c002d0` mocks + `660d622` WIP UI), worktree `../entrelinhas-wt/TASK-012` | Fazer merge da `main` (corrige teste instável `root redirects` já resolvido em `a0bf97f`); e2e `tests/e2e/library.spec.ts`; screenshots de evidência nos 4 viewports comparados aos frames 01/02/03/16/18; estilos `library.css` ainda **não escritos** (UI funcional sem CSS próprio); `npm run verify`; revisão Codex; integrar. |
-| TASK-011, 013, 014 | planned | — | onda 2 da SPRINT-02 |
+| TASK-012 biblioteca | review — r1 **reprovado** (4 achados, corrigidos em `e393af0`), r2 em andamento | branch `task/TASK-012-library` (`e393af0`), worktree `../entrelinhas-wt/TASK-012` | CSS, e2e e 16 baselines revisadas prontos; `main` mesclada com TASK-010; verify verde (176 testes, 52 e2e). Após aprovação: integrar. Handoff `docs/tasks/handoffs/TASK-012.md`. |
+| TASK-011 login admin | running — **worker agy** (1ª tarefa do agy) | branch `task/TASK-011-admin-login`, worktree `../entrelinhas-wt/TASK-011` | Aguardar handoff; líder revisa, roda e2e, gera/revisa baselines, liga `/admin/login` e cria `/admin`. Verificar se o agy conseguiu comitar (`--add-dir .git`). |
+| TASK-013, 014 | planned | — | dependem da TASK-012 integrada |
 
 ## Limitações vigentes
+
+- Toggle de tema do `AppShell` não tratava falha ao salvar (análogo ao #3 da revisão r1 da TASK-012): corrigido com teste RED; revisão Codex pendente.
 
 - Todo comportamento de servidor é **simulado** (MSW). Nada de backend, sandbox, TLS, Telegram, Push, MCP ou agy-runner existe.
 - agy liberado e verificado (skills, AGENTS.md, leitura de PNG); escrita em worktree/porta ainda não verificadas.
