@@ -15,6 +15,9 @@ export default defineConfig({
     baseURL: `http://localhost:${port}`,
     trace: 'retain-on-failure',
     reducedMotion: 'reduce',
+    // Grayscale text antialiasing: LCD subpixel rendering depends on the host's fontconfig and made
+    // CI differ from local baselines (text-only diffs).
+    launchOptions: { args: ['--disable-lcd-text'] },
     locale: 'pt-BR',
     timezoneId: 'America/Sao_Paulo',
   },
