@@ -1,0 +1,83 @@
+import { act, renderHook, waitFor } from '@testing-library/react';
+import type { SitesQuery } from '@entrelinhas/contracts';
+import { db } from '../../mocks/db';
+import { setScenario } from '../../mocks/scenario';
+import { useSites } from './useSites';
+
+type Query = Omit<SitesQuery, 'cursor' | 'limit'>;
+const render = (query: Query) => renderHook((q: Query) => useSites(q), { initialProps: query });
+beforeEach(() => {
+  db.sessionProfileId = 'prof_evaldo';
+});
+
+const settle = () => new Promise((resolve) => setTimeout(resolve, 50));
+
+test('retry after a failed first page loads it again', async () => {
+  setScenario('unavailable');
+  const { result } = render({ sort: 'last_conversion', order: 'desc' });
+  await waitFor(() => expect(result.current.status).toBe('error'));
+  expect(result.current.error?.status).toBe(503);
+  setScenario('default');
+  act(() => result.current.retry());
+  await waitFor(() => expect(result.current.status).toBe('ready'));
+  expect(result.current.items).toHaveLength(6);
+});
+
+test('load more without a next page does nothing', async () => {
+  const { result } = render({ sort: 'last_conversion', order: 'desc', q: 'submarino' });
+  await waitFor(() => expect(result.current.status).toBe('ready'));
+  expect(result.current.nextCursor).toBeNull();
+  act(() => result.current.loadMore());
+  expect(result.current.status).toBe('ready');
+  expect(result.current.items).toHaveLength(3);
+});
+
+test('a first page aborted by a filter change is not reported as an error', async () => {
+  setScenario('slow');
+  const { result, rerender } = render({ sort: 'last_conversion', order: 'desc' });
+  rerender({ sort: 'name', order: 'asc' });
+  await settle();
+  expect(result.current.status).toBe('loading');
+  expect(result.current.error).toBeNull();
+});
+
+test('a next page aborted by a filter change is not reported as an error', async () => {
+  const { result, rerender } = render({ sort: 'last_conversion', order: 'desc' });
+  await waitFor(() => expect(result.current.status).toBe('ready'));
+  setScenario('slow');
+  act(() => result.current.loadMore());
+  expect(result.current.status).toBe('loading-more');
+  rerender({ sort: 'name', order: 'asc' });
+  await settle();
+  expect(result.current.status).toBe('loading');
+  expect(result.current.error).toBeNull();
+});
+
+test('retry after a failed next page and a failed new filter reloads the new first page (review r1 #2)', async () => {
+  const { result, rerender } = render({ sort: 'last_conversion', order: 'desc' });
+  await waitFor(() => expect(result.current.status).toBe('ready'));
+  setScenario('unavailable');
+  act(() => result.current.loadMore());
+  await waitFor(() => expect(result.current.status).toBe('error'));
+  rerender({ sort: 'name', order: 'asc' });
+  await waitFor(() => expect(result.current.status).toBe('error'));
+  expect(result.current.items).toHaveLength(0);
+  setScenario('default');
+  act(() => result.current.retry());
+  await waitFor(() => expect(result.current.status).toBe('ready'));
+  expect(result.current.items).toHaveLength(6);
+});
+
+test('a result that arrives after its query was replaced is ignored (review agy TASK-013 #4)', async () => {
+  const { usePagedList } = await import('../shared/usePagedList');
+  const resolvers: ((page: { items: string[]; next_cursor: null; total: number }) => void)[] = [];
+  // A fetcher that ignores the abort signal, as a defensive check on the hook itself.
+  const fetchPage = () => new Promise<{ items: string[]; next_cursor: null; total: number }>((resolve) => resolvers.push(resolve));
+  const { result, rerender } = renderHook((q: string) => usePagedList({ q }, fetchPage), { initialProps: 'old' });
+  rerender('new');
+  act(() => resolvers[0]?.({ items: ['old result'], next_cursor: null, total: 1 }));
+  await settle();
+  expect(result.current.items).toEqual([]);
+  act(() => resolvers[1]?.({ items: ['new result'], next_cursor: null, total: 1 }));
+  await waitFor(() => expect(result.current.items).toEqual(['new result']));
+});

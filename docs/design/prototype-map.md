@@ -80,4 +80,6 @@ Fonte complementar: `prototype/Entrelinhas — Leitor de blogs em áudio.figcraf
 | 01 | Card "Sua biblioteca em dia" e barra do player ausentes no shell | dependem de endpoints de fontes (S04) e do player (TASK-021); entram quando existirem dados reais do mock |
 | 01 | Texto de apoio da sidebar ("Protótipo · dados de exemplo") omitido | rótulo do protótipo, não do produto |
 | todos | Navegação lateral com `white-space: nowrap` e padding direito 4px | evita quebra de "Capturas privadas" (frame em linha única) |
-
+| 18 | Com "Nome do site" o sentido é "A a Z / Z a A" | frame mostra só o sentido por data ("Mais recentes/antigas primeiro"), sem significado para nomes |
+| 01 | Rodapé "Mais itens ao rolar" omitido; carregamento só pelo botão "Carregar mais" | rolagem infinita não implementada; não anunciar comportamento inexistente |
+| 01 | Ícone do site usa só a inicial ("C" para Circuito, Ciência Aberta e Cotidiano) | frame usa 1–2 letras sem regra explícita; ícone real virá de `icon_url` |

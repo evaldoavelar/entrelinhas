@@ -52,7 +52,8 @@ test('theme follows the profile preference and the switch persists it (RF40, RF4
   db.preferences.prof_evaldo = { theme: 'light', library_view: 'cards' };
   renderApp('/library');
   const toggle = await screen.findByRole('switch', { name: 'Tema escuro (Dracula)' });
-  expect(document.documentElement.dataset.theme).toBe('light');
+  // The saved preference arrives after the shell renders: wait for it instead of racing it.
+  await waitFor(() => expect(document.documentElement.dataset.theme).toBe('light'));
   expect(toggle).toHaveAttribute('aria-checked', 'false');
   await userEvent.click(toggle);
   await waitFor(() => expect(document.documentElement.dataset.theme).toBe('dark'));
@@ -61,13 +62,19 @@ test('theme follows the profile preference and the switch persists it (RF40, RF4
 
 test('a theme change that cannot be saved keeps the theme and says so', async () => {
   signedIn();
-  renderApp('/library');
+  // A page without its own requests: the global scenario below must only hit the preference save.
+  renderApp('/playlists');
   const toggle = await screen.findByRole('switch', { name: 'Tema escuro (Dracula)' });
   const before = document.documentElement.dataset.theme;
   setScenario('unavailable');
   await userEvent.click(toggle);
   expect(await screen.findByRole('alert')).toHaveTextContent('Não foi possível salvar o tema');
   expect(document.documentElement.dataset.theme).toBe(before);
+  // A later attempt clears the message and saves (review: recovery path).
+  setScenario('default');
+  await userEvent.click(toggle);
+  await waitFor(() => expect(document.documentElement.dataset.theme).not.toBe(before));
+  expect(screen.queryByRole('alert')).toBeNull();
 });
 
 test('anonymous pages default to the dark theme', async () => {

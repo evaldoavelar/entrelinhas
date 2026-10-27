@@ -6,15 +6,17 @@ interface FieldFrameProps {
   error?: string | undefined;
   // Caller-provided description ids are kept and merged before hint/error ids.
   describedBy?: string | undefined;
+  // Label stays in the accessibility tree but is visually hidden (control text already says it).
+  labelHidden?: boolean | undefined;
   children: (aria: { id: string; describedBy: string | undefined; invalid: boolean }) => ReactNode;
 }
 
-function FieldFrame({ label, hint, error, describedBy: external, children }: FieldFrameProps) {
+function FieldFrame({ label, hint, error, describedBy: external, labelHidden, children }: FieldFrameProps) {
   const id = useId();
   const describedBy = [external ?? '', hint ? `${id}-hint` : '', error ? `${id}-error` : ''].filter(Boolean).join(' ') || undefined;
   return (
     <div className="el-field">
-      <label htmlFor={id} className="el-field__label">
+      <label htmlFor={id} className={labelHidden ? 'visually-hidden' : 'el-field__label'}>
         {label}
       </label>
       {children({ id, describedBy, invalid: Boolean(error) })}
@@ -56,14 +58,15 @@ export function TextField({ label, hint, error, className, 'aria-describedby': e
 
 interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'id'> {
   label: string;
+  labelHidden?: boolean;
   hint?: string;
   error?: string;
   options: { value: string; label: string }[];
 }
 
-export function Select({ label, hint, error, options, className, 'aria-describedby': external, 'aria-invalid': ariaInvalid, ...props }: SelectProps) {
+export function Select({ label, labelHidden, hint, error, options, className, 'aria-describedby': external, 'aria-invalid': ariaInvalid, ...props }: SelectProps) {
   return (
-    <FieldFrame label={label} hint={hint} error={error} describedBy={external}>
+    <FieldFrame label={label} hint={hint} error={error} describedBy={external} labelHidden={labelHidden}>
       {({ id, describedBy, invalid }) => (
         <select
           {...props}

@@ -4,7 +4,7 @@ Fonte única de regras para qualquer agente (Claude Code, Codex, agy) e pessoas.
 
 ## Objetivo
 
-Leitor de blogs em áudio para uma casa (nome provisório "Entrelinhas"). Ordem vigente (ADR-12): **frontend primeiro com HTTP mockado (MSW); backend real só após o marco FRONTEND-MOCK-COMPLETE e o gate G0-B.**
+Leitor de blogs em áudio para uma casa (Entrelinhas). Ordem vigente (ADR-12): **frontend primeiro com HTTP mockado (MSW); backend real só após o marco FRONTEND-MOCK-COMPLETE e o gate G0-B.**
 
 ## Fontes (por precedência)
 

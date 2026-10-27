@@ -13,25 +13,26 @@ Fonte consolidada de progresso. Conferir sempre contra `git log`/`git worktree l
 | TASK-002 contracts | `1af70b8`, `83043f5` | aprovado |
 | TASK-003 api-client + MSW | `3e90ea6`, `142f1d0`, `869e253`, `1640572` | aprovado |
 | TASK-004 tokens + componentes | `94dcddf`, `9519f4c`, `2957501` | aprovado |
+| TASK-012 biblioteca | `1c002d0`…`e8afeeb`, merge `eee4a98`, pós-merge `cc0e725`+teste isolado | Codex r1/r2 reprovadas (6 achados corrigidos com RED); r3 Codex interrompida (limite); **r3 agy aprovada** (`.omc/reviews/TASK-012-r3-agy.txt`) |
 | TASK-010 login casa/perfil | `44379c2` (worker Codex), `e6db425`, `6149a72`, merge `68e3852` | aprovado (r2; `.omc/reviews/TASK-010-r2.txt`) |
+| TASK-013 busca global | `a6e6c2f`…`5bfda5a`, merge `9886b83` | agy r1/r2 reprovadas (7 achados corrigidos com RED); **r3 agy aprovada** (`.omc/reviews/TASK-013-r3-agy.txt`). Verify verde na `main`: 202 testes, 60 e2e; gate diff 100% linhas / 91,4% branches. Teste de tema do shell (flaky) corrigido. |
 | TASK-005 shell/router/tema | `2957501`, `54d6caa`, `a0bf97f`, `d7cda13` | aprovado (4ª rodada, `.omc/reviews/TASK-005-r4.txt`) |
 
-Último `npm run verify` verde na `main` (`68e3852`): 143 testes frontend + contracts + api-client, cobertura frontend 95% stmts / 90.42% branches, bundle de produção sem MSW, 28 e2e (4 projetos), baselines `toHaveScreenshot` do login revisadas.
+Último `npm run verify` verde na `main` (merge TASK-012 + correção do teste de tema): 183 testes frontend + contracts + api-client, cobertura frontend 96,7% stmts / 90,3% branches, bundle sem MSW, 52 e2e (4 projetos) com baselines revisadas de login e biblioteca.
 
 ## Em aberto
 
 | Tarefa | Estado | Onde | Pendência concreta |
 | --- | --- | --- | --- |
-| TASK-012 biblioteca | review — r1 **reprovado** (4 achados, corrigidos em `e393af0`), r2 em andamento | branch `task/TASK-012-library` (`e393af0`), worktree `../entrelinhas-wt/TASK-012` | CSS, e2e e 16 baselines revisadas prontos; `main` mesclada com TASK-010; verify verde (176 testes, 52 e2e). Após aprovação: integrar. Handoff `docs/tasks/handoffs/TASK-012.md`. |
-| TASK-011 login admin | running — **worker agy** (1ª tarefa do agy) | branch `task/TASK-011-admin-login`, worktree `../entrelinhas-wt/TASK-011` | Aguardar handoff; líder revisa, roda e2e, gera/revisa baselines, liga `/admin/login` e cria `/admin`. Verificar se o agy conseguiu comitar (`--add-dir .git`). |
-| TASK-013, 014 | planned | — | dependem da TASK-012 integrada |
+| TASK-011 login admin | review — implementado pelo **agy** (`a239257`), revisado pelo Claude (aprovado), integrado na branch pelo líder (`c5a1285`: rotas, e2e, baselines) | branch `task/TASK-011-admin-login`, worktree `../entrelinhas-wt/TASK-011` | Falta revisão independente das mudanças do líder (Codex após 15:04 — limite de uso). verify verde (155 testes, 40 e2e). |
+| TASK-014 detalhe do site | review — worker agy entregou (`d38df19`, comitado pelo líder); **revisão do líder reprovou** (4 achados) | branch `task/TASK-014-site-detail`, worktree `../entrelinhas-wt/TASK-014` | Após integrar TASK-013: mesclar `main`, reusar `usePagedList`, PAGE_SIZE 4 + fixtures do Horizonte (12), cursor por site, a11y; ligar rota; e2e/baselines. |
 
 ## Limitações vigentes
 
-- Toggle de tema do `AppShell` não tratava falha ao salvar (análogo ao #3 da revisão r1 da TASK-012): corrigido com teste RED; revisão Codex pendente.
+- Toggle de tema do `AppShell` não tratava falha ao salvar: corrigido em `cf44555`/`cc0e725`, aprovado pelo agy.
 
 - Todo comportamento de servidor é **simulado** (MSW). Nada de backend, sandbox, TLS, Telegram, Push, MCP ou agy-runner existe.
 - agy liberado e verificado (skills, AGENTS.md, leitura de PNG); escrita em worktree/porta ainda não verificadas.
 - Worker Codex: sandbox não comita em worktree nem abre portas (ver agent-compatibility.md); líder comita com atribuição e roda e2e.
-- Tema claro e telas móveis (exceto biblioteca) sem frame: derivados. Baselines `toHaveScreenshot`: só login (TASK-010). `e2e/shell.spec.ts` (TASK-005) ainda grava evidência por cima de arquivo versionado — mesmo defeito apontado na revisão da TASK-010; converter para baseline revisada (líder).
+- Tema claro e telas móveis (exceto biblioteca) sem frame: derivados. Baselines `toHaveScreenshot` revisadas: login (TASK-010) e biblioteca (TASK-012). `e2e/shell.spec.ts` grava evidência só em `test-results` (corrigido na TASK-012).
 - TDD: infraestrutura de mocks (3e90ea6) teve testes depois do código; compensado por mutações.
