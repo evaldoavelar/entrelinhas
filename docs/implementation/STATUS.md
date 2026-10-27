@@ -13,15 +13,15 @@ Fonte consolidada de progresso. Conferir sempre contra `git log`/`git worktree l
 | TASK-002 contracts | `1af70b8`, `83043f5` | aprovado |
 | TASK-003 api-client + MSW | `3e90ea6`, `142f1d0`, `869e253`, `1640572` | aprovado |
 | TASK-004 tokens + componentes | `94dcddf`, `9519f4c`, `2957501` | aprovado |
+| TASK-010 login casa/perfil | `44379c2` (worker Codex), `e6db425`, `6149a72`, merge `68e3852` | aprovado (r2; `.omc/reviews/TASK-010-r2.txt`) |
 | TASK-005 shell/router/tema | `2957501`, `54d6caa`, `a0bf97f`, `d7cda13` | aprovado (4ª rodada, `.omc/reviews/TASK-005-r4.txt`) |
 
-Último `npm run verify` verde na `main` (`d7cda13`): 135 testes frontend + contracts + api-client, cobertura frontend 94.8% stmts / 91.4% branches, bundle de produção sem MSW, 16 e2e (4 projetos).
+Último `npm run verify` verde na `main` (`68e3852`): 143 testes frontend + contracts + api-client, cobertura frontend 95% stmts / 90.42% branches, bundle de produção sem MSW, 28 e2e (4 projetos), baselines `toHaveScreenshot` do login revisadas.
 
 ## Em aberto
 
 | Tarefa | Estado | Onde | Pendência concreta |
 | --- | --- | --- | --- |
-| TASK-010 login casa/perfil | review — implementado pelo **worker Codex**, ainda **não revisado nem integrado** | branch `task/TASK-010-login` (`44379c2`), worktree `../entrelinhas-wt/TASK-010` | Líder: revisar diff/testes, rodar e2e (`tests/e2e/login.spec.ts`; o sandbox do worker não abriu porta), ligar `LoginPage` em `/login` no router, verificar fidelidade ao frame 26, integrar. Handoff em `docs/tasks/handoffs/TASK-010.md` (na branch). |
 | TASK-012 biblioteca | running (Claude) | branch `task/TASK-012-library` (`1c002d0` mocks + `660d622` WIP UI), worktree `../entrelinhas-wt/TASK-012` | Fazer merge da `main` (corrige teste instável `root redirects` já resolvido em `a0bf97f`); e2e `tests/e2e/library.spec.ts`; screenshots de evidência nos 4 viewports comparados aos frames 01/02/03/16/18; estilos `library.css` ainda **não escritos** (UI funcional sem CSS próprio); `npm run verify`; revisão Codex; integrar. |
 | TASK-011, 013, 014 | planned | — | onda 2 da SPRINT-02 |
 
@@ -30,5 +30,5 @@ Fonte consolidada de progresso. Conferir sempre contra `git log`/`git worktree l
 - Todo comportamento de servidor é **simulado** (MSW). Nada de backend, sandbox, TLS, Telegram, Push, MCP ou agy-runner existe.
 - agy liberado e verificado (skills, AGENTS.md, leitura de PNG); escrita em worktree/porta ainda não verificadas.
 - Worker Codex: sandbox não comita em worktree nem abre portas (ver agent-compatibility.md); líder comita com atribuição e roda e2e.
-- Tema claro e telas móveis (exceto biblioteca) sem frame: derivados. Sem baselines `toHaveScreenshot` ainda (só evidência revisada).
+- Tema claro e telas móveis (exceto biblioteca) sem frame: derivados. Baselines `toHaveScreenshot`: só login (TASK-010). `e2e/shell.spec.ts` (TASK-005) ainda grava evidência por cima de arquivo versionado — mesmo defeito apontado na revisão da TASK-010; converter para baseline revisada (líder).
 - TDD: infraestrutura de mocks (3e90ea6) teve testes depois do código; compensado por mutações.

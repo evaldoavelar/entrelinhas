@@ -55,9 +55,9 @@ Colunas: requisito → tarefas → testes → estado → natureza da evidência.
 | RF38 | TASK-012 | — | planned | simulado na UI |
 | RF39 | TASK-012 | — | planned | simulado na UI |
 | RF40 | TASK-004 | — | planned | simulado na UI |
-| RF41 | TASK-005 | — | planned | simulado na UI |
-| RF42 | TASK-010 | — | planned | simulado na UI |
-| RF43 | TASK-010, TASK-030 | — | planned | simulado na UI |
+| RF41 | TASK-005 | `app/shell.test.tsx`, `e2e/shell.spec.ts` | done | simulado na UI |
+| RF42 | TASK-010 | `features/auth/LoginPage.test.tsx`, `app/shell.test.tsx` (/login route), `e2e/login.spec.ts` | done | simulado na UI |
+| RF43 | TASK-010, TASK-030 | TASK-010: `LoginPage.test.tsx` (avatar não desbloqueia privadas), `e2e/login.spec.ts` | parcial (TASK-030 pendente) | simulado na UI |
 | RF44 | TASK-060, TASK-061 | — | planned | simulado na UI |
 | RF45 | TASK-012, TASK-020 | — | planned | simulado na UI |
 | RF46 | TASK-022 | — | planned | simulado na UI |

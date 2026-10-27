@@ -1,6 +1,6 @@
 # TASK-010 — Login: senha da casa e perfil
 
-- **Estado:** running · **Implementa:** Codex · **Revisa:** Claude · **Sprint:** S02
+- **Estado:** done · **Implementa:** Codex · **Revisa:** Claude · **Sprint:** S02
 - **Frame:** `prototype/26 · Entrar — Senha da casa e perfil.png` (sha256 `fda947ccaa0da349…`, completo em prototype-map), 1440×1000, Dracula.
 - **Objetivo observável:** `/login` com senha da casa + escolha de perfil (cartões selecionáveis por teclado, radiogroup); sucesso → biblioteca; senha errada → erro sem bloquear outros perfis; 429 → mensagem com Retry-After; link "Entrar como administrador" → `/admin/login`. Selecionar avatar não desbloqueia capturas privadas.
 - **Requisitos:** RF42, RF43, CA28, CA29 (UI simulada).
