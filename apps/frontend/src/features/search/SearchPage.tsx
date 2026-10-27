@@ -143,7 +143,7 @@ export function SearchPage() {
       <p role="status" className="search__status">
         {results.status === 'idle' ? 'Digite um termo para buscar em todos os sites.' : null}
         {results.status === 'loading' ? 'Buscando…' : null}
-        {results.status === 'ready' && results.total === 0 ? `Nenhuma leitura encontrada para “${q ?? ''}”.` : null}
+        {results.status === 'ready' && results.total === 0 ? `Nenhuma leitura encontrada para “${String(q)}”.` : null}
       </p>
 
       {results.items.length > 0 ? (
@@ -172,9 +172,9 @@ export function SearchPage() {
         </>
       ) : null}
 
-      {results.status === 'error' && results.error ? (
+      {results.status === 'error' ? (
         <div className="search__error">
-          <p role="alert">{results.error.message}</p>
+          <p role="alert">{results.error?.message}</p>
           <Button variant="outline" onClick={results.retry}>
             Tentar de novo
           </Button>

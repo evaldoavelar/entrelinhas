@@ -102,3 +102,14 @@ test('back to the library, and the library links to the global search for its qu
   await userEvent.click(screen.getByRole('link', { name: 'Voltar à biblioteca' }));
   expect(router.state.location.pathname).toBe('/library');
 });
+
+test('back/forward to another query updates the box; erasing the text by hand clears the search', async () => {
+  const router = renderSearch('/search?q=submarino');
+  await results();
+  await router.navigate('/search?q=profundezas');
+  await waitFor(() => expect(searchbox()).toHaveValue('profundezas'));
+  expect(within(await results()).getAllByRole('listitem')).toHaveLength(1);
+  await userEvent.clear(searchbox());
+  await waitFor(() => expect(router.state.location.search).toBe(''));
+  expect(screen.getByRole('status')).toHaveTextContent('Digite um termo para buscar em todos os sites.');
+});

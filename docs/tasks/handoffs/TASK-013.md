@@ -39,4 +39,4 @@ Diferenças justificadas: "Baixar" e "⋯" desabilitados com descrição acessí
 4. Resposta de pedido já abortado gravava o estado se o fetcher ignorasse o abort: guardas de abort também nos sucessos de `usePagedList`. RED: `useSites.test.ts › a result that arrives after its query was replaced is ignored` (itens da consulta antiga apareciam).
 5. "Nenhuma leitura encontrada" não era anunciado: uma única região `role="status"` para ocioso/buscando/sem resultado (sem margem quando vazia). RED: teste CA67 agora espera o anúncio em `role="status"`.
 
-Após correções: 199 testes unitários verdes; e2e busca + biblioteca 32 passed 2× sem alterar baselines.
+Após correções: e2e busca + biblioteca 32 passed 2× sem alterar baselines. **O commit `f48978f` foi feito antes de conferir o verify, que falhou no gate** (`SearchPage.tsx` branches 78,85%). Corrigido no commit seguinte: testes de mudança externa de `q` (voltar/avançar) e de apagar o texto à mão; condições redundantes simplificadas. Resultado: `npm run verify` exit 0 (200 testes frontend, 60 e2e); diff 100% linhas / 92,14% branches.
