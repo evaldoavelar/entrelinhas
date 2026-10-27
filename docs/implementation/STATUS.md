@@ -13,25 +13,25 @@ Fonte consolidada de progresso. Conferir sempre contra `git log`/`git worktree l
 | TASK-002 contracts | `1af70b8`, `83043f5` | aprovado |
 | TASK-003 api-client + MSW | `3e90ea6`, `142f1d0`, `869e253`, `1640572` | aprovado |
 | TASK-004 tokens + componentes | `94dcddf`, `9519f4c`, `2957501` | aprovado |
+| TASK-012 biblioteca | `1c002d0`…`e8afeeb`, merge `eee4a98`, pós-merge `cc0e725`+teste isolado | Codex r1/r2 reprovadas (6 achados corrigidos com RED); r3 Codex interrompida (limite); **r3 agy aprovada** (`.omc/reviews/TASK-012-r3-agy.txt`) |
 | TASK-010 login casa/perfil | `44379c2` (worker Codex), `e6db425`, `6149a72`, merge `68e3852` | aprovado (r2; `.omc/reviews/TASK-010-r2.txt`) |
 | TASK-005 shell/router/tema | `2957501`, `54d6caa`, `a0bf97f`, `d7cda13` | aprovado (4ª rodada, `.omc/reviews/TASK-005-r4.txt`) |
 
-Último `npm run verify` verde na `main` (`68e3852`): 143 testes frontend + contracts + api-client, cobertura frontend 95% stmts / 90.42% branches, bundle de produção sem MSW, 28 e2e (4 projetos), baselines `toHaveScreenshot` do login revisadas.
+Último `npm run verify` verde na `main` (merge TASK-012 + correção do teste de tema): 183 testes frontend + contracts + api-client, cobertura frontend 96,7% stmts / 90,3% branches, bundle sem MSW, 52 e2e (4 projetos) com baselines revisadas de login e biblioteca.
 
 ## Em aberto
 
 | Tarefa | Estado | Onde | Pendência concreta |
 | --- | --- | --- | --- |
-| TASK-012 biblioteca | review — Codex r1 e r2 reprovadas (6 achados, todos corrigidos com RED; `e393af0`, `e8afeeb`); r3 Codex interrompida por limite de uso → r3 com **agy** em andamento | branch `task/TASK-012-library` (`e8afeeb`), worktree `../entrelinhas-wt/TASK-012` | verify verde (182 testes, 52 e2e). Integrar após aprovação. |
 | TASK-011 login admin | review — implementado pelo **agy** (`a239257`), revisado pelo Claude (aprovado), integrado na branch pelo líder (`c5a1285`: rotas, e2e, baselines) | branch `task/TASK-011-admin-login`, worktree `../entrelinhas-wt/TASK-011` | Falta revisão independente das mudanças do líder (Codex após 15:04 — limite de uso). verify verde (155 testes, 40 e2e). |
-| TASK-013, 014 | planned | — | dependem da TASK-012 integrada |
+| TASK-013, 014 | ready | — | TASK-012 integrada; onda 2 liberada |
 
 ## Limitações vigentes
 
-- Toggle de tema do `AppShell` não tratava falha ao salvar: corrigido em `cf44555` com teste RED; revisão (agy) em andamento.
+- Toggle de tema do `AppShell` não tratava falha ao salvar: corrigido em `cf44555`/`cc0e725`, aprovado pelo agy.
 
 - Todo comportamento de servidor é **simulado** (MSW). Nada de backend, sandbox, TLS, Telegram, Push, MCP ou agy-runner existe.
 - agy liberado e verificado (skills, AGENTS.md, leitura de PNG); escrita em worktree/porta ainda não verificadas.
 - Worker Codex: sandbox não comita em worktree nem abre portas (ver agent-compatibility.md); líder comita com atribuição e roda e2e.
-- Tema claro e telas móveis (exceto biblioteca) sem frame: derivados. Baselines `toHaveScreenshot`: só login (TASK-010). `e2e/shell.spec.ts` (TASK-005) ainda grava evidência por cima de arquivo versionado — mesmo defeito apontado na revisão da TASK-010; converter para baseline revisada (líder).
+- Tema claro e telas móveis (exceto biblioteca) sem frame: derivados. Baselines `toHaveScreenshot` revisadas: login (TASK-010) e biblioteca (TASK-012). `e2e/shell.spec.ts` grava evidência só em `test-results` (corrigido na TASK-012).
 - TDD: infraestrutura de mocks (3e90ea6) teve testes depois do código; compensado por mutações.

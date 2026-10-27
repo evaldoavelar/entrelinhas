@@ -18,8 +18,8 @@ Colunas: requisito → tarefas → testes → estado → natureza da evidência.
 | RF01 | TASK-020 | — | planned | simulado na UI |
 | RF02 | S10+ | — | planned | real pendente |
 | RF03 | S10+ | — | planned | real pendente |
-| RF04 | TASK-012 | — | planned | simulado na UI |
-| RF05 | TASK-012 | — | planned | simulado na UI |
+| RF04 | TASK-012 | `features/library/LibraryPage.test.tsx`, `useSites.test.ts`, `e2e/library.spec.ts` | done | simulado na UI |
+| RF05 | TASK-012 | `features/library/LibraryPage.test.tsx`, `useSites.test.ts`, `e2e/library.spec.ts` | done | simulado na UI |
 | RF06 | TASK-012 (exibição); S10+ (regra) | — | planned | real pendente |
 | RF07 | TASK-012, TASK-014 | — | planned | simulado na UI |
 | RF08 | TASK-031 | — | planned | simulado na UI |
@@ -29,9 +29,9 @@ Colunas: requisito → tarefas → testes → estado → natureza da evidência.
 | RF12 | TASK-021 (exibição); S10+ | — | planned | real pendente |
 | RF13 | TASK-021 (capa genérica); S10+ | — | planned | real pendente |
 | RF14 | S10+ | — | planned | real pendente |
-| RF15 | TASK-012 | — | planned | simulado na UI |
-| RF16 | TASK-012 | — | planned | simulado na UI |
-| RF17 | TASK-012, TASK-013 | — | planned | simulado na UI |
+| RF15 | TASK-012 | `features/library/LibraryPage.test.tsx`, `useSites.test.ts`, `e2e/library.spec.ts` | done | simulado na UI |
+| RF16 | TASK-012 | `features/library/LibraryPage.test.tsx`, `useSites.test.ts`, `e2e/library.spec.ts` | done | simulado na UI |
+| RF17 | TASK-012, TASK-013 | TASK-012: `features/library/LibraryPage.test.tsx`, `useSites.test.ts`, `e2e/library.spec.ts` (busca na biblioteca) | parcial (TASK-013 pendente) | simulado na UI |
 | RF18 | TASK-051 | — | planned | simulado na UI |
 | RF19 | TASK-021 | — | planned | simulado na UI |
 | RF20 | TASK-051 | — | planned | simulado na UI |
@@ -51,15 +51,15 @@ Colunas: requisito → tarefas → testes → estado → natureza da evidência.
 | RF34 | TASK-001..005 (navegador); S10+ (Docker) | — | planned | real pendente |
 | RF35 | TASK-030 | — | planned | simulado na UI |
 | RF36 | TASK-030 | — | planned | simulado na UI |
-| RF37 | TASK-012 | — | planned | simulado na UI |
-| RF38 | TASK-012 | — | planned | simulado na UI |
-| RF39 | TASK-012 | — | planned | simulado na UI |
+| RF37 | TASK-012 | `features/library/LibraryPage.test.tsx`, `useSites.test.ts`, `e2e/library.spec.ts` | done | simulado na UI |
+| RF38 | TASK-012 | `features/library/LibraryPage.test.tsx`, `useSites.test.ts`, `e2e/library.spec.ts` | done | simulado na UI |
+| RF39 | TASK-012 | `features/library/LibraryPage.test.tsx`, `useSites.test.ts`, `e2e/library.spec.ts` | done | simulado na UI |
 | RF40 | TASK-004 | — | planned | simulado na UI |
 | RF41 | TASK-005 | `app/shell.test.tsx`, `e2e/shell.spec.ts` | done | simulado na UI |
 | RF42 | TASK-010 | `features/auth/LoginPage.test.tsx`, `app/shell.test.tsx` (/login route), `e2e/login.spec.ts` | done | simulado na UI |
 | RF43 | TASK-010, TASK-030 | TASK-010: `LoginPage.test.tsx` (avatar não desbloqueia privadas), `e2e/login.spec.ts` | parcial (TASK-030 pendente) | simulado na UI |
 | RF44 | TASK-060, TASK-061 | — | planned | simulado na UI |
-| RF45 | TASK-012, TASK-020 | — | planned | simulado na UI |
+| RF45 | TASK-012, TASK-020 | TASK-012: `features/library/LibraryPage.test.tsx`, `useSites.test.ts`, `e2e/library.spec.ts` (filtro de categoria) | parcial (TASK-020 pendente) | simulado na UI |
 | RF46 | TASK-022 | — | planned | simulado na UI |
 | RF47 | TASK-060 | — | planned | simulado na UI |
 | RF48 | S10+ fase 7 | — | planned | real pendente |
