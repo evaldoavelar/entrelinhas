@@ -63,9 +63,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signOut = useCallback(async () => {
-    await api.deleteSession();
     generation.current += 1;
-    setState({ status: 'anonymous' });
+    const started = generation.current;
+    await api.deleteSession();
+    // A login completed while the logout was in flight wins over the late logout response.
+    if (generation.current === started) setState({ status: 'anonymous' });
   }, []);
 
   const updatePreferences = useCallback(async (update: PreferencesUpdate) => {

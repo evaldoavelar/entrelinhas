@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import { NavLink, Outlet } from 'react-router';
+import { NavLink, Outlet, useLocation } from 'react-router';
 import { Avatar, Badge, Button, Icon, IconButton, Toggle, type IconName } from '../components';
 import type { Session } from '@entrelinhas/contracts';
 import { useSession } from './session';
@@ -62,6 +62,16 @@ export function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuId = useId();
   const menuButton = useRef<HTMLButtonElement>(null);
+  const main = useRef<HTMLElement>(null);
+  const focusMainAfterNavigation = useRef(false);
+  const { pathname } = useLocation();
+
+  // After choosing a destination in the mobile menu the focused link unmounts; move focus to the page.
+  useEffect(() => {
+    if (!focusMainAfterNavigation.current) return;
+    focusMainAfterNavigation.current = false;
+    main.current?.focus();
+  }, [pathname]);
 
   // Escape closes the menu wherever focus is (button or panel) and returns focus to the button.
   useEffect(() => {
@@ -108,12 +118,18 @@ export function AppShell() {
       </header>
       {menuOpen ? (
         <nav id={menuId} aria-label="Menu do perfil" className="shell__mobile-menu">
-          <NavItems unread={unread} onNavigate={() => setMenuOpen(false)} />
+          <NavItems
+            unread={unread}
+            onNavigate={() => {
+              focusMainAfterNavigation.current = true;
+              setMenuOpen(false);
+            }}
+          />
           <ProfileControls session={state.session} />
         </nav>
       ) : null}
 
-      <main className="shell__main">
+      <main ref={main} tabIndex={-1} className="shell__main">
         <Outlet />
       </main>
       <nav aria-label="Atalhos" className="shell__tabbar">

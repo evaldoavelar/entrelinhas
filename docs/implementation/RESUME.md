@@ -10,7 +10,8 @@
    git worktree add ../entrelinhas-wt/TASK-XXX -b task/TASK-XXX-slug main
    (cd ../entrelinhas-wt/TASK-XXX && npm ci)
    codex exec -C ../entrelinhas-wt/TASK-XXX -s workspace-write \
-     "Você é worker da TASK-XXX. Use as skills parallel-task, frontend-tdd e prototype-guided-ui. Leia docs/tasks/TASK-XXX.md e AGENTS.md. Implemente, comite na branch e escreva o handoff."
+     "Você é worker da TASK-XXX. Use as skills parallel-task, frontend-tdd e prototype-guided-ui. Leia docs/tasks/TASK-XXX.md e AGENTS.md. Implemente, comite na branch e escreva o handoff." < /dev/null
+   # < /dev/null é obrigatório: sem ele `codex exec` fica esperando stdin indefinidamente (ocorrido em 27/10).
    ```
 7. Após integrar: atualizar STATUS, traceability e este arquivo se o procedimento mudar.
 
