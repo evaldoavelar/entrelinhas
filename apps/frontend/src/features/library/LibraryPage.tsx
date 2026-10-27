@@ -165,6 +165,13 @@ export function LibraryPage() {
         </p>
       ) : null}
 
+      {q ? (
+        <Link to={`/search?q=${encodeURIComponent(q)}`} className="library__global-search">
+          {`Ver leituras com “${q}”`}
+          <Icon name="arrowRight" size={16} />
+        </Link>
+      ) : null}
+
       {sites.status === 'loading' ? (
         <p role="status" className="library__status">
           Carregando sites…
