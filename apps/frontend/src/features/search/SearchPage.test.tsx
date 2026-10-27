@@ -113,3 +113,12 @@ test('back/forward to another query updates the box; erasing the text by hand cl
   await waitFor(() => expect(router.state.location.search).toBe(''));
   expect(screen.getByRole('status')).toHaveTextContent('Digite um termo para buscar em todos os sites.');
 });
+
+test('going back to the query the page was opened with refreshes the box again (r2 #1)', async () => {
+  const router = renderSearch('/search?q=submarino');
+  await results();
+  await router.navigate('/search?q=profundezas');
+  await waitFor(() => expect(searchbox()).toHaveValue('profundezas'));
+  await router.navigate(-1);
+  await waitFor(() => expect(searchbox()).toHaveValue('submarino'));
+});

@@ -86,10 +86,12 @@ export function SearchPage() {
   // Our own debounced push is skipped: the navigation renders in a transition, so the user may
   // already have typed more by then.
   const [shownQ, setShownQ] = useState(q);
-  const [pushedQ, setPushedQ] = useState(q);
+  // null = no push of ours is waiting to be rendered.
+  const [pushedQ, setPushedQ] = useState<string | undefined | null>(null);
   if (q !== shownQ) {
     setShownQ(q);
-    if (q !== pushedQ && (q ?? '') !== searchText.trim()) setSearchText(q ?? '');
+    if (q === pushedQ) setPushedQ(null);
+    else if ((q ?? '') !== searchText.trim()) setSearchText(q ?? '');
   }
   const input = useRef<HTMLInputElement>(null);
   const titleId = useId();

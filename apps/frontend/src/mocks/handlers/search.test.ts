@@ -77,4 +77,11 @@ describe('review agy r1', () => {
     const left = textSnippet(glued, findMatch(glued, '1234')!);
     expect(left[0]?.text).toContain('identificador_muito_longo_');
   });
+
+  test('a long spaced word before the match stays as left context (r2 #2)', async () => {
+    const { textSnippet, findMatch } = await import('./search');
+    const text = 'Texto longo com mais de oitenta caracteres para passar do limite. Aqui temos desenvolvimento submarino no oceano.';
+    const left = textSnippet(text, findMatch(text, 'submarino')!);
+    expect(left[0]?.text).toBe('…desenvolvimento ');
+  });
 });

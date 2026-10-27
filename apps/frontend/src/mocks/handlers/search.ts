@@ -51,7 +51,7 @@ export function textSnippet(text: string, match: { start: number; end: number })
     // whole word when the window edge falls inside the word that touches the match.
     if (from > 0) {
       const space = text.indexOf(' ', from);
-      from = space >= 0 && space < match.start ? space + 1 : text.lastIndexOf(' ', match.start - 1) + 1;
+      from = space >= 0 && space + 1 < match.start ? space + 1 : text.lastIndexOf(' ', from) + 1;
     }
     if (to < text.length) {
       const inward = text.lastIndexOf(' ', to);
