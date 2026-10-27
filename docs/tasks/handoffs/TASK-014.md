@@ -83,3 +83,12 @@ Conforme a instrução ao worker nº 12 ("Não saia do sandbox nem peça elevaç
 - Conforme instrução, não foram geradas baselines visuais de screenshot (`tests/e2e/site.spec.ts-snapshots`). O líder executa o Playwright e revisa as baselines geradas.
 - O player e o fluxo de download dependem de tarefas futuras (TASK-021 e posterior); os controles mantêm motivo acessível sem simular falso funcionamento.
 - Próximo passo: o líder (Claude) revisa o handoff, registra `siteHandlers` em `mocks/handlers/index.ts`, vincula a rota `/sites/:siteId` no router global, comita os arquivos criados e executa a integração.
+
+## Revisão do líder (Claude, 27/10, sessão 2) — REPROVADO, correções pelo líder na integração
+
+- Commit do worker registrado pelo líder em `d38df19` (sandbox do agy montou o git como somente leitura — desta vez o agy **não** pediu elevação; instrução respeitada).
+1. **Média — `useSiteDetail.ts:6`: `PAGE_SIZE = 2`** escolhido para forçar "Carregar mais" com as 4 fixtures; o frame 04 mostra 4 por página. Fixtures inconsistentes (Horizonte diz 12 áudios, há 4 posts) — fixtures são do líder.
+2. **Média — `useSiteDetail.ts:51,77`: sucesso sem guarda de abort** (mesmo achado #4 que o próprio agy apontou na TASK-013) e lógica de paginação duplicada do `useSites`; após a TASK-013, reutilizar `features/shared/usePagedList.ts`.
+3. **Baixa — `mocks/handlers/site.ts`: cursor não amarrado ao site** (cursor do site A em `/v1/sites/B/posts` devolve posts de A) e prefixo `snap_` igual ao da biblioteca.
+4. **Baixa — `SiteDetailPage.tsx`: "BIBLIOTECA" em maiúsculas no texto** (o CSS já faz uppercase; leitor de tela pode soletrar); ações desabilitadas explicadas só por `title` ("Configurar fonte", "Adicionar todos à playlist"); id fixo `articles-heading`.
+- Plano: integrar TASK-013 primeiro; depois mesclar a `main` aqui, corrigir 1–4 com RED, ligar `/sites/:siteId`, registrar `siteHandlers`, rodar e2e e revisar baselines.
