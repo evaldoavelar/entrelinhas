@@ -1,7 +1,13 @@
+import { useState } from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router';
+import { routes } from './app/router';
+import { SessionProvider } from './app/session';
+
 export function App() {
+  const [router] = useState(() => createBrowserRouter(routes));
   return (
-    <main>
-      <h1>entrelinhas</h1>
-    </main>
+    <SessionProvider>
+      <RouterProvider router={router} />
+    </SessionProvider>
   );
 }

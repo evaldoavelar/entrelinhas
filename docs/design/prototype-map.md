@@ -76,3 +76,8 @@ Fonte complementar: `prototype/Entrelinhas — Leitor de blogs em áudio.figcraf
 | 13 | "Modal" no nome, mas é página completa no frame | Implementar como rota de página (frame), não diálogo sobreposto |
 | 01/16 | Texto de apoio difere ("Todos os seus sites…" vs "Suas leituras, no seu tempo.") | Manter textos de cada viewport conforme frames |
 | vários | Texto secundário `#6272a4` sobre `#44475a` tem contraste < 4.5:1 | CA27 exige contraste: clarear o token `text-muted` sobre superfícies elevadas mantendo o matiz; documentar no handoff de TASK-004 |
+| 01 | Rodapé da sidebar ganha switch "Tema escuro (Dracula)" e botão "Sair" | RF41 (tema por perfil) e logout; frame não mostra esses controles |
+| 01 | Card "Sua biblioteca em dia" e barra do player ausentes no shell | dependem de endpoints de fontes (S04) e do player (TASK-021); entram quando existirem dados reais do mock |
+| 01 | Texto de apoio da sidebar ("Protótipo · dados de exemplo") omitido | rótulo do protótipo, não do produto |
+| todos | Navegação lateral com `white-space: nowrap` e padding direito 4px | evita quebra de "Capturas privadas" (frame em linha única) |
+

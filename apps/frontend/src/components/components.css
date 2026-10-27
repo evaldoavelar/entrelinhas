@@ -19,7 +19,7 @@
   background: var(--color-primary);
   color: var(--color-on-primary);
 }
-.el-button--secondary {
+.el-button--outline {
   background: var(--color-surface);
   border-color: var(--color-input-border);
   color: var(--color-text);
@@ -191,4 +191,17 @@
 
 .el-icon {
   flex: none;
+}
+
+.el-icon-button {
+  display: inline-grid;
+  place-items: center;
+  width: var(--control-height);
+  height: var(--control-height);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
 }

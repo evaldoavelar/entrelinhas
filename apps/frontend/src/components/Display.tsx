@@ -6,12 +6,14 @@ export function Chip({ tone = 'neutral', children }: { tone?: Tone; children: Re
   return <span className={`el-chip el-chip--${tone}`}>{children}</span>;
 }
 
-// Count with an accessible name ("2 notificações não lidas"); hidden when zero.
+// Visual count plus a visually hidden phrase ("2 notificações não lidas"). aria-label on a generic
+// span is not part of the accessible name (WAI-ARIA), so the phrase is real text. Hidden when zero.
 export function Badge({ count, label }: { count: number; label: string }) {
   if (count <= 0) return null;
   return (
-    <span className="el-badge" aria-label={`${count} ${label}`}>
-      {count}
+    <span className="el-badge">
+      <span aria-hidden="true">{count}</span>
+      <span className="visually-hidden">{` ${count} ${label}`}</span>
     </span>
   );
 }

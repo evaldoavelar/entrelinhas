@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
-import { Avatar, Badge, Button, Callout, Card, Chip, Icon, Select, TextField, Toggle } from '.';
+import { Avatar, Badge, Button, Callout, Card, Chip, Icon, IconButton, Select, TextField, Toggle } from '.';
 
 describe('Button', () => {
   test('is type=button by default so it never submits forms by accident', () => {
@@ -20,6 +20,19 @@ describe('Button', () => {
     expect(button).toHaveClass('el-button', 'el-button--danger');
     await userEvent.click(button);
     expect(onClick).not.toHaveBeenCalled();
+  });
+
+  test('outline variant exists as specified in TASK-004 (review 9519f4c #3)', () => {
+    render(<Button variant="outline">Carregar mais</Button>);
+    expect(screen.getByRole('button', { name: 'Carregar mais' })).toHaveClass('el-button--outline');
+  });
+
+  test('icon button requires and exposes an accessible label', async () => {
+    const onClick = vi.fn();
+    render(<IconButton icon="pause" label="Pausar" onClick={onClick} />);
+    await userEvent.click(screen.getByRole('button', { name: 'Pausar' }));
+    expect(onClick).toHaveBeenCalledOnce();
+    expect(screen.getByRole('button', { name: 'Pausar' }).querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
   });
 
   test('submit type can be requested explicitly', () => {
@@ -57,6 +70,18 @@ describe('TextField and Select', () => {
     expect(screen.getByText('Senha incorreta.')).toHaveAttribute('role', 'alert');
   });
 
+  test('caller aria-describedby is merged, never replacing hint/error (review 9519f4c #2)', () => {
+    render(
+      <>
+        <p id="ext">Formato: https://</p>
+        <TextField label="URL" error="URL inválida." aria-describedby="ext" aria-invalid={false} />
+      </>,
+    );
+    const input = screen.getByLabelText('URL');
+    expect(input).toHaveAccessibleDescription('Formato: https:// URL inválida.');
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+  });
+
   test('field without error is valid and has no alert', () => {
     render(<TextField label="URL do artigo" />);
     expect(screen.getByLabelText('URL do artigo')).not.toHaveAttribute('aria-invalid');
@@ -82,9 +107,13 @@ describe('TextField and Select', () => {
 });
 
 describe('display components', () => {
-  test('badge has an accessible name, not just a number', () => {
-    render(<Badge count={2} label="notificações não lidas" />);
-    expect(screen.getByText('2')).toHaveAccessibleName('2 notificações não lidas');
+  test('badge contributes a full phrase to its container name, not just a number (review 9519f4c #1)', () => {
+    render(
+      <a href="/n">
+        Notificações <Badge count={2} label="notificações não lidas" />
+      </a>,
+    );
+    expect(screen.getByRole('link')).toHaveAccessibleName('Notificações 2 notificações não lidas');
   });
 
   test('badge with zero renders nothing', () => {

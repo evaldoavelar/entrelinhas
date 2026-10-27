@@ -10,7 +10,7 @@ test('bootstrap mounts the app into #root', async () => {
   root.id = 'root';
   document.body.append(root);
   await import('./main');
-  expect(await screen.findByRole('heading', { level: 1, name: 'entrelinhas' })).toBeInTheDocument();
+  expect(await screen.findByRole('heading', { level: 1, name: 'Quem vai ouvir?' })).toBeInTheDocument();
 });
 
 test('bootstrap fails loudly when #root is missing', async () => {

@@ -4,12 +4,14 @@ interface FieldFrameProps {
   label: string;
   hint?: string | undefined;
   error?: string | undefined;
+  // Caller-provided description ids are kept and merged before hint/error ids.
+  describedBy?: string | undefined;
   children: (aria: { id: string; describedBy: string | undefined; invalid: boolean }) => ReactNode;
 }
 
-function FieldFrame({ label, hint, error, children }: FieldFrameProps) {
+function FieldFrame({ label, hint, error, describedBy: external, children }: FieldFrameProps) {
   const id = useId();
-  const describedBy = [hint ? `${id}-hint` : '', error ? `${id}-error` : ''].filter(Boolean).join(' ') || undefined;
+  const describedBy = [external ?? '', hint ? `${id}-hint` : '', error ? `${id}-error` : ''].filter(Boolean).join(' ') || undefined;
   return (
     <div className="el-field">
       <label htmlFor={id} className="el-field__label">
@@ -36,16 +38,16 @@ interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'id
   error?: string;
 }
 
-export function TextField({ label, hint, error, className, ...props }: TextFieldProps) {
+export function TextField({ label, hint, error, className, 'aria-describedby': external, 'aria-invalid': ariaInvalid, ...props }: TextFieldProps) {
   return (
-    <FieldFrame label={label} hint={hint} error={error}>
+    <FieldFrame label={label} hint={hint} error={error} describedBy={external}>
       {({ id, describedBy, invalid }) => (
         <input
+          {...props}
           id={id}
           aria-describedby={describedBy}
-          aria-invalid={invalid || undefined}
+          aria-invalid={invalid || ariaInvalid || undefined}
           className={['el-input', className].filter(Boolean).join(' ')}
-          {...props}
         />
       )}
     </FieldFrame>
@@ -59,16 +61,16 @@ interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'id'
   options: { value: string; label: string }[];
 }
 
-export function Select({ label, hint, error, options, className, ...props }: SelectProps) {
+export function Select({ label, hint, error, options, className, 'aria-describedby': external, 'aria-invalid': ariaInvalid, ...props }: SelectProps) {
   return (
-    <FieldFrame label={label} hint={hint} error={error}>
+    <FieldFrame label={label} hint={hint} error={error} describedBy={external}>
       {({ id, describedBy, invalid }) => (
         <select
+          {...props}
           id={id}
           aria-describedby={describedBy}
-          aria-invalid={invalid || undefined}
+          aria-invalid={invalid || ariaInvalid || undefined}
           className={['el-input', 'el-select', className].filter(Boolean).join(' ')}
-          {...props}
         >
           {options.map((o) => (
             <option key={o.value} value={o.value}>
