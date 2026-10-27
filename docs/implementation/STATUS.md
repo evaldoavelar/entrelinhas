@@ -28,7 +28,7 @@ Fonte consolidada de progresso. Conferir sempre contra `git log`/`git worktree l
 ## Limitações vigentes
 
 - Todo comportamento de servidor é **simulado** (MSW). Nada de backend, sandbox, TLS, Telegram, Push, MCP ou agy-runner existe.
-- agy bloqueado como worker (termos/plano do Antigravity não confirmados pelo usuário).
+- agy liberado e verificado (skills, AGENTS.md, leitura de PNG); escrita em worktree/porta ainda não verificadas.
 - Worker Codex: sandbox não comita em worktree nem abre portas (ver agent-compatibility.md); líder comita com atribuição e roda e2e.
 - Tema claro e telas móveis (exceto biblioteca) sem frame: derivados. Sem baselines `toHaveScreenshot` ainda (só evidência revisada).
 - TDD: infraestrutura de mocks (3e90ea6) teve testes depois do código; compensado por mutações.
