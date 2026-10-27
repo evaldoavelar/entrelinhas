@@ -68,6 +68,11 @@ test('a theme change that cannot be saved keeps the theme and says so', async ()
   await userEvent.click(toggle);
   expect(await screen.findByRole('alert')).toHaveTextContent('Não foi possível salvar o tema');
   expect(document.documentElement.dataset.theme).toBe(before);
+  // A later attempt clears the message and saves (review: recovery path).
+  setScenario('default');
+  await userEvent.click(toggle);
+  await waitFor(() => expect(document.documentElement.dataset.theme).not.toBe(before));
+  expect(screen.queryByRole('alert')).toBeNull();
 });
 
 test('anonymous pages default to the dark theme', async () => {
