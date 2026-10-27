@@ -59,6 +59,17 @@ test('theme follows the profile preference and the switch persists it (RF40, RF4
   expect(db.preferences.prof_evaldo?.theme).toBe('dark');
 });
 
+test('a theme change that cannot be saved keeps the theme and says so', async () => {
+  signedIn();
+  renderApp('/library');
+  const toggle = await screen.findByRole('switch', { name: 'Tema escuro (Dracula)' });
+  const before = document.documentElement.dataset.theme;
+  setScenario('unavailable');
+  await userEvent.click(toggle);
+  expect(await screen.findByRole('alert')).toHaveTextContent('Não foi possível salvar o tema');
+  expect(document.documentElement.dataset.theme).toBe(before);
+});
+
 test('anonymous pages default to the dark theme', async () => {
   renderApp('/login');
   await screen.findByRole('heading', { level: 1, name: 'Quem vai ouvir?' });

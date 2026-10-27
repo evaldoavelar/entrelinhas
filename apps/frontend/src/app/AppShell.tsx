@@ -36,6 +36,7 @@ function NavItems({ unread, onNavigate }: { unread: number; onNavigate?: () => v
 function ProfileControls({ session }: { session: Session }) {
   const { signOut, updatePreferences } = useSession();
   const { profile, preferences } = session;
+  const [themeError, setThemeError] = useState('');
   return (
     <div className="shell__profile">
       <p className="shell__profile-name">
@@ -45,8 +46,17 @@ function ProfileControls({ session }: { session: Session }) {
       <Toggle
         label="Tema escuro (Dracula)"
         checked={preferences.theme === 'dark'}
-        onChange={(dark) => void updatePreferences({ theme: dark ? 'dark' : 'light' })}
+        onChange={(dark) => {
+          setThemeError('');
+          // The theme follows the saved preference, so a failed save leaves it unchanged.
+          updatePreferences({ theme: dark ? 'dark' : 'light' }).catch(() => setThemeError('Não foi possível salvar o tema. Tente de novo.'));
+        }}
       />
+      {themeError ? (
+        <p role="alert" className="shell__profile-error">
+          {themeError}
+        </p>
+      ) : null}
       <Button variant="ghost" onClick={() => void signOut()}>
         <Icon name="logout" />
         Sair

@@ -28,7 +28,7 @@ Fonte consolidada de progresso. Conferir sempre contra `git log`/`git worktree l
 
 ## Limitações vigentes
 
-- Pendência (líder): toggle de tema do `AppShell` usa `void updatePreferences` sem tratar falha (achado análogo ao #3 da revisão r1 da TASK-012); corrigir com teste RED.
+- Toggle de tema do `AppShell` não tratava falha ao salvar (análogo ao #3 da revisão r1 da TASK-012): corrigido com teste RED; revisão Codex pendente.
 
 - Todo comportamento de servidor é **simulado** (MSW). Nada de backend, sandbox, TLS, Telegram, Push, MCP ou agy-runner existe.
 - agy liberado e verificado (skills, AGENTS.md, leitura de PNG); escrita em worktree/porta ainda não verificadas.

@@ -81,6 +81,10 @@
   font-size: var(--text-sm);
   color: var(--color-text-muted);
 }
+.shell__profile-error {
+  font-size: var(--text-xs);
+  color: var(--color-danger);
+}
 .shell__profile .el-button--ghost {
   justify-self: start;
 }
