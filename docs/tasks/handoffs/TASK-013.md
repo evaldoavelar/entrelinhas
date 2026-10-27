@@ -20,6 +20,7 @@
 - `npx vitest run src/features`: 43 passed (biblioteca inclusive, após extrair `usePagedList`).
 - `PW_PORT=4178 npx playwright test tests/e2e/search.spec.ts`: 8 passed, duas execuções seguidas sem update (baselines criadas com `--update-snapshots=missing` e revisadas: dark-desktop, dark-mobile, light-desktop).
 - `npm run verify`: exit 0, 196 testes frontend, 60 e2e.
+- `COVERAGE_BASE=main npm run test:coverage -w apps/frontend` (após o commit `a6e6c2f`): diff linhas 131/131 (100%), branches 103/118 (87,29%); projeto 96,98% stmts / 89,4% branches; nenhum arquivo abaixo do piso.
 
 ## Visual (frame 15, sha256 `09a712817dcca669…`, 1440×1000)
 
