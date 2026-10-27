@@ -65,6 +65,16 @@ test('anonymous pages default to the dark theme', async () => {
   expect(document.documentElement.dataset.theme).toBe('dark');
 });
 
+test('the /login route signs in with the household password and opens the library (TASK-010)', async () => {
+  const router = renderApp('/library');
+  await userEvent.click(await screen.findByRole('radio', { name: 'Ana' }));
+  await userEvent.type(screen.getByLabelText('Senha da casa'), 'casa-exemplo');
+  await userEvent.click(screen.getByRole('button', { name: 'Entrar' }));
+  expect(await screen.findByRole('heading', { level: 1, name: 'Sua biblioteca' })).toBeInTheDocument();
+  expect(router.state.location.pathname).toBe('/library');
+  expect(db.sessionProfileId).toBe('prof_ana');
+});
+
 test('sign out ends the session and returns to login', async () => {
   signedIn();
   const router = renderApp('/library');

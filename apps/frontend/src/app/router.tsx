@@ -1,4 +1,5 @@
 import { Navigate, type RouteObject } from 'react-router';
+import { LoginPage } from '../features/auth/LoginPage';
 import { AppShell } from './AppShell';
 import { PendingPage } from './PendingPage';
 import { RequireSession } from './RequireSession';
@@ -6,7 +7,7 @@ import { LibraryPage } from '../features/library/LibraryPage';
 
 // Global router (leader-owned). Feature tasks replace PendingPage elements on integration.
 export const routes: RouteObject[] = [
-  { path: '/login', element: <PendingPage eyebrow="Entrar" title="Quem vai ouvir?" sprint="TASK-010" /> },
+  { path: '/login', element: <LoginPage /> },
   { path: '/admin/login', element: <PendingPage eyebrow="Administração" title="Acesso de administrador" sprint="TASK-011" /> },
   {
     element: <RequireSession />,
