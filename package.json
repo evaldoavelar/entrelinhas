@@ -17,7 +17,7 @@
     "test:scripts": "node --test scripts/coverage/check-coverage.test.mjs scripts/workspaces/check-workspaces.test.mjs",
     "test:coverage": "npm run test:coverage --workspaces --if-present",
     "build": "npm run build -w apps/frontend",
-    "e2e": "playwright test",
+    "e2e": "scripts/e2e/run.sh",
     "verify": "npm run check:workspaces && npm run lint && npm run typecheck && npm run test:scripts && npm run test:coverage && npm run build && npm run e2e",
     "check:workspaces": "node scripts/workspaces/check-workspaces.mjs"
   },

@@ -60,3 +60,12 @@ Máximo inicial: 2 workers de implementação + líder. RAM livre medida ~3 GiB:
 - **Codex:** limite de uso da conta atingido às ~12:49 (`ERROR: You've hit your usage limit … try again at 3:04 PM`) durante a revisão r3 da TASK-012 e a revisão do toggle de tema; nenhum veredito foi produzido. Revisões redistribuídas ao agy (somente leitura) enquanto durar o limite.
 - **agy como worker (TASK-011):** comitou no worktree com `--add-dir <repo>/.git`. Em `--mode auto` aprovou sozinho sair do sandbox para abrir porta (Playwright) — contraria a política; próximas delegações: `--mode accept-edits --sandbox` e instrução explícita de não sair do sandbox; o líder roda o e2e.
 - **agy como revisor:** `agy --mode plan --sandbox -p "…" < /dev/null`.
+
+## E2E e screenshots determinísticos (27/10, CI vermelho)
+
+- **Problema:** o CI do GitHub falhava em 17 baselines visuais (diferença só em texto, ~0,01 dos pixels). Causa verificada: as baselines locais tinham antialiasing em tons de cinza e o runner renderizava com subpixel LCD (franjas coloridas), que depende do fontconfig do host.
+- **Correção:** `playwright.config.ts` fixa `--disable-lcd-text`; `npm run e2e` passa a rodar `scripts/e2e/run.sh`, que executa o Playwright na imagem oficial `mcr.microsoft.com/playwright:v<versão do @playwright/test>-noble` (Docker local); o CI roda o job inteiro nessa mesma imagem (tag fixa, com passo que falha se divergir do lockfile). Nenhuma baseline foi alterada: as revisadas continuam valendo.
+- `E2E_HOST=1 npm run e2e` usa o navegador do host (diagnóstico; pode divergir das baselines em outras máquinas). Dentro de um container o script roda direto.
+- Ao atualizar `@playwright/test`, trocar também a tag em `.github/workflows/ci.yml` e o número no passo "image matches @playwright/test". Workers não rodam e2e (sem Docker/porta no sandbox): o líder roda.
+- Observado uma vez: 3 falhas numa execução lenta no container, não reproduzidas em 4 execuções limpas e 1 sob carga de CPU (log da falha não foi guardado); se reaparecer, guardar `test-results/` antes de re-executar.
+

@@ -9,17 +9,21 @@ jobs:
   verify:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    # Pinned Playwright image (same tag as @playwright/test): screenshots depend on the OS font
+    # rendering, so baselines are only valid here and in `npm run e2e` (scripts/e2e/run.sh).
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
+      options: --ipc=host
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: 24
-          cache: npm
+      - name: image matches @playwright/test
+        run: |
+          test "$(node -p "require('./package-lock.json').packages['node_modules/@playwright/test'].version")" = "1.64.1"
+          node --version
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
       - name: verify
         env:
           # Diff coverage gate (ADR-10) against the PR base; on push to main the project gate still applies.
