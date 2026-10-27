@@ -31,7 +31,7 @@ Colunas: requisito → tarefas → testes → estado → natureza da evidência.
 | RF14 | S10+ | — | planned | real pendente |
 | RF15 | TASK-012 | `features/library/LibraryPage.test.tsx`, `useSites.test.ts`, `e2e/library.spec.ts` | done | simulado na UI |
 | RF16 | TASK-012 | `features/library/LibraryPage.test.tsx`, `useSites.test.ts`, `e2e/library.spec.ts` | done | simulado na UI |
-| RF17 | TASK-012, TASK-013 | TASK-012: `features/library/LibraryPage.test.tsx`, `useSites.test.ts`, `e2e/library.spec.ts` (busca na biblioteca) | parcial (TASK-013 pendente) | simulado na UI |
+| RF17 | TASK-012, TASK-013 | TASK-012: `features/library/LibraryPage.test.tsx`, `useSites.test.ts`, `e2e/library.spec.ts` (busca na biblioteca); TASK-013: `features/search/SearchPage.test.tsx`, `mocks/handlers/search.test.ts`, `e2e/search.spec.ts` | integrado (`9886b83`) | simulado na UI |
 | RF18 | TASK-051 | — | planned | simulado na UI |
 | RF19 | TASK-021 | — | planned | simulado na UI |
 | RF20 | TASK-051 | — | planned | simulado na UI |
