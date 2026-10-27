@@ -23,7 +23,7 @@ export default defineConfig({
     { name: 'light-mobile', use: { ...devices['Pixel 7'], viewport: { width: 390, height: 1100 }, colorScheme: 'light' } },
   ],
   webServer: {
-    command: 'npm run preview -w apps/frontend',
+    command: 'npm run build:mock -w apps/frontend && npm run preview -w apps/frontend',
     url: 'http://localhost:4173',
     reuseExistingServer: false,
     timeout: 60_000,

@@ -4,5 +4,14 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p .",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage && node ../../scripts/coverage/check-coverage.mjs --report coverage/coverage-final.json --src src"
+  },
+  "dependencies": {
+    "@entrelinhas/contracts": "*",
+    "zod": "4.6.7"
   }
 }

@@ -7,6 +7,7 @@
   },
   "workspaces": [
     "packages/contracts",
+    "packages/api-client",
     "apps/frontend"
   ],
   "scripts": {
