@@ -10,5 +10,6 @@ test-results/
 .env
 .env.*
 !.env.example
+!apps/frontend/.env.mock
 .omc/
 .DS_Store
