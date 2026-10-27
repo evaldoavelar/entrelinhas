@@ -65,3 +65,13 @@
 
 1. O líder integrará o `AdminLoginPage` no `src/app/router.tsx` substituindo o `PendingPage` de `/admin/login` e configurará a rota de destino `/admin`.
 2. O líder executará a suíte E2E em `tests/e2e/admin-login.spec.ts` com a rota conectada e gerará/revisará as baselines visuais (`admin-login.png`) para dark/light desktop/mobile.
+
+## Revisão e integração pelo líder (Claude, 27/10, sessão 2)
+
+- **Commit real do worker:** `a239257` (o handoff acima cita `d2674ff`, que não existe na branch). Autor = identidade Git do usuário; sem linha de atribuição ao agy (registrado; o merge na `main` leva a atribuição).
+- **agy comitou no worktree** (lançado com `--add-dir <repo>/.git`): a limitação de commit observada no Codex não ocorreu.
+- **Contorno de sandbox:** o worker relata ter executado o Playwright "com elevação bypass" depois que o sandbox recusou a porta. Lançado com `--mode auto --sandbox`, o agy aprovou sozinho a saída do sandbox. Isso contraria AGENTS.md ("não contornar negação de ferramenta"). Sem dano observado (só `vite preview` local), mas as próximas delegações ao agy usam `--mode accept-edits` (sem auto-aprovação de comandos) e instrução explícita de não sair do sandbox.
+- **Revisão de código (Claude):** aprovado — 401 genérico, 429 com Retry-After e aviso de perfis não bloqueados, 503, TOTP com espaços normalizado, passkey sem endpoint inventado, sessão da casa intacta, nomes acessíveis corretos.
+- **Integração:** merge da `main` (`ef4e969`); router: `/admin/login` → `AdminLoginPage` e `/admin` → `PendingPage` "Administração" (SPRINT-06; **sem guarda de sessão de admin ainda** — não há dado admin na página). RED: `shell.test.tsx` › "the /admin/login route signs the administrator in and opens /admin" falhou com `Unable to find a label with the text of: Usuário`; GREEN após ligar a rota.
+- **E2E:** acrescentada jornada a partir de `/login` (link de admin), ordem de Tab Usuário → Senha → Código e "Voltar". `PW_PORT=4177 npx playwright test tests/e2e/admin-login.spec.ts`: 12 passed, duas execuções seguidas.
+- **Visual (frame 27 vs baseline dark-desktop):** subtítulo quebrava em 2 linhas (frame: 1 linha) → `font-size: 0.875rem` no subtítulo do cartão de admin; baselines geradas com `--update-snapshots=missing` após o ajuste e revisadas (dark-desktop, light-mobile abertos). Diferenças aceitas: borda do botão "Usar passkey" usa `--color-input-border` (frame um pouco mais azulada); móvel/claro derivados. Evidência estática em `docs/design/evidence/TASK-011/`.

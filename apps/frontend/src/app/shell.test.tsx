@@ -86,6 +86,18 @@ test('the /login route signs in with the household password and opens the librar
   expect(db.sessionProfileId).toBe('prof_ana');
 });
 
+test('the /admin/login route signs the administrator in and opens /admin (TASK-011)', async () => {
+  const router = renderApp('/login');
+  await userEvent.click(await screen.findByRole('link', { name: 'Entrar como administrador' }));
+  await userEvent.type(screen.getByLabelText('Usuário'), 'evaldo');
+  await userEvent.type(screen.getByLabelText('Senha'), 'admin-exemplo');
+  await userEvent.type(screen.getByLabelText('Código do aplicativo autenticador'), '482 913');
+  await userEvent.click(screen.getByRole('button', { name: 'Entrar' }));
+  expect(await screen.findByRole('heading', { level: 1, name: 'Administração' })).toBeInTheDocument();
+  expect(router.state.location.pathname).toBe('/admin');
+  expect(db.sessionProfileId).toBeNull();
+});
+
 test('sign out ends the session and returns to login', async () => {
   signedIn();
   const router = renderApp('/library');

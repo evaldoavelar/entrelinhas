@@ -1,4 +1,5 @@
 import { Navigate, type RouteObject } from 'react-router';
+import { AdminLoginPage } from '../features/auth/admin/AdminLoginPage';
 import { LoginPage } from '../features/auth/LoginPage';
 import { AppShell } from './AppShell';
 import { PendingPage } from './PendingPage';
@@ -7,7 +8,9 @@ import { RequireSession } from './RequireSession';
 // Global router (leader-owned). Feature tasks replace PendingPage elements on integration.
 export const routes: RouteObject[] = [
   { path: '/login', element: <LoginPage /> },
-  { path: '/admin/login', element: <PendingPage eyebrow="Administração" title="Acesso de administrador" sprint="TASK-011" /> },
+  { path: '/admin/login', element: <AdminLoginPage /> },
+  // Admin area placeholder: no admin data and no admin session guard yet (SPRINT-06 adds both).
+  { path: '/admin', element: <PendingPage eyebrow="Administração" title="Administração" sprint="SPRINT-06" /> },
   {
     element: <RequireSession />,
     children: [

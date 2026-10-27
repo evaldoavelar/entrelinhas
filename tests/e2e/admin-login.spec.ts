@@ -29,6 +29,21 @@ test('admin login: keyboard navigation, invalid credentials, passkey notice, the
   await expect(page).toHaveURL(/\/admin$/);
 });
 
+test('admin login is reached from the household login, tabs in order and goes back (TASK-011)', async ({ page }) => {
+  await page.goto('/login');
+  await page.getByRole('link', { name: 'Entrar como administrador' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Acesso de administrador' })).toBeVisible();
+
+  await page.getByLabel('Usuário').focus();
+  await page.keyboard.press('Tab');
+  await expect(page.getByLabel('Senha')).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(page.getByLabel('Código do aplicativo autenticador')).toBeFocused();
+
+  await page.getByRole('link', { name: 'Voltar' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Quem vai ouvir?' })).toBeVisible();
+});
+
 // Reviewed baselines (frame 27 comparison in docs/tasks/handoffs/TASK-011.md); never auto-updated.
 test('admin login visual baseline (frame 27, TASK-011)', async ({ page }, info) => {
   await page.goto('/admin/login');

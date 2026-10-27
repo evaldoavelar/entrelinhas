@@ -63,3 +63,7 @@
 .admin-login-back:hover {
   text-decoration: underline;
 }
+/* Frame 27: the subtitle fits on one line inside the 420px content width. */
+.admin-login-card .login-subtitle {
+  font-size: 0.875rem;
+}
