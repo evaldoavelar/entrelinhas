@@ -28,3 +28,10 @@ Frame 26 aberto em 1440×1000, Dracula. Cartão central de cerca de 500 px, fund
 ## Próximo passo
 
 Em ambiente com escrita no git e porta local disponível, o líder deve registrar o commit Conventional Commits com `TASK-010` no corpo e `Co-Authored-By: Codex <noreply@openai.com>` na linha final, integrar `LoginPage` à rota `/login`, remover o `fixme` da spec após implementar a jornada Playwright, executar o E2E em 4174 e revisar a captura 1440×1000 contra o frame. Não marcar a tarefa `done` antes da revisão independente e dos checks na base integrada.
+
+## Integração pelo líder (Claude, 27/10, sessão 2)
+
+- Commit do worker registrado pelo líder em `44379c2` (sandbox sem escrita no git). Merge da `main` (`d7cda13`) na branch.
+- Router: `/login` → `LoginPage` (arquivo de dono único, alterado pelo líder). RED antes: teste `the /login route signs in…` em `src/app/shell.test.tsx` falhou com `Unable to find role="radio" and name "Ana"`; GREEN após a troca.
+- E2E: as duas verificações de contrato da spec original **falhavam no navegador real** (`fetch` antes de o service worker do MSW controlar a página → `index.html`, `Unexpected token '<'`); defeito do teste, não do produto (a UI só monta após os mocks). Spec substituída por jornada de UI (teclado no radiogroup, senha errada, Enter → biblioteca), link de admin e evidência; o `test.fixme` foi removido. `PW_PORT=4175 npx playwright test tests/e2e/login.spec.ts`: 12 passed (4 projetos).
+- Revisão visual (frame 26 vs `docs/design/evidence/TASK-010/login-dark-desktop.png`, 1440×1000): geometria do cartão, título serifado, campo, cartões de perfil, CTA e link conferem. Corrigido: marca em 700 (frame bold) e cartões de perfil com 128 px (antes esticavam). Diferenças aceitas: subtítulo/explicação usam `--color-text-muted` em vez do azul `#6272a4` do frame (contraste WCAG insuficiente sobre `#44475a`); "Evaldo Avelar" vem da fixture (frame mostra "Evaldo"); cartão ~10 px mais baixo (centralização vertical). Móvel e claro derivados (sem frame); nome longo truncado com reticências, nome acessível completo.

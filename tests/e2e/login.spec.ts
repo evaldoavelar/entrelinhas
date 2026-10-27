@@ -1,35 +1,41 @@
 import { test, expect } from '@playwright/test';
 
-// The global /login route still renders PendingPage until the leader integrates TASK-010.
-// These browser checks cover the mocked HTTP contract without claiming UI coverage.
-test('public profiles and household session are served by the browser mock', async ({ page }) => {
-  await page.goto('/login');
-  const result = await page.evaluate(async () => {
-    const profiles = await fetch('/v1/profiles/public').then((response) => response.json());
-    const login = await fetch('/v1/session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ household_password: 'casa-exemplo', profile_id: profiles.items[1].id }),
-    });
-    return { names: profiles.items.map((profile: { display_name: string }) => profile.display_name), status: login.status, session: await login.json() };
-  });
-  expect(result.names).toEqual(['Evaldo Avelar', 'Ana', 'Convidado']);
-  expect(result.status).toBe(201);
-  expect(result.session.profile.display_name).toBe('Ana');
-  expect(result.session.private_unlocked).toBe(false);
+test('household login: keyboard profile choice, wrong password, then library (RF42/RF43)', async ({ page }) => {
+  await page.goto('/library');
+  await expect(page.getByRole('heading', { level: 1, name: 'Quem vai ouvir?' })).toBeVisible();
+  const group = page.getByRole('radiogroup', { name: 'Perfil' });
+  await expect(group.getByRole('radio', { name: 'Evaldo Avelar' })).toBeChecked();
+
+  // Keyboard: arrows move the selection inside the radio group.
+  await group.getByRole('radio', { name: 'Evaldo Avelar' }).focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(group.getByRole('radio', { name: 'Ana' })).toBeChecked();
+  await expect(group.getByRole('radio', { name: 'Ana' })).toBeFocused();
+
+  const password = page.getByLabel('Senha da casa');
+  await password.fill('errada');
+  await page.getByRole('button', { name: 'Entrar' }).click();
+  await expect(page.getByRole('alert')).toHaveText('Senha da casa incorreta.');
+  await expect(group.getByRole('radio')).toHaveCount(3);
+
+  await password.fill('casa-exemplo');
+  await password.press('Enter');
+  await expect(page.getByRole('heading', { level: 1, name: 'Sua biblioteca' })).toBeVisible();
+  await expect(page).toHaveURL(/\/library$/);
 });
 
-test('wrong household password leaves profiles available', async ({ page }) => {
+test('admin link leads to the individual admin login', async ({ page }) => {
   await page.goto('/login');
-  const result = await page.evaluate(async () => {
-    const wrong = await fetch('/v1/session', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ household_password: 'errada', profile_id: 'prof_evaldo' }) });
-    const profiles = await fetch('/v1/profiles/public').then((response) => response.json());
-    return { status: wrong.status, profileCount: profiles.items.length };
-  });
-  expect(result).toEqual({ status: 401, profileCount: 3 });
+  await page.getByRole('link', { name: 'Entrar como administrador' }).click();
+  await expect(page).toHaveURL(/\/admin\/login$/);
 });
 
-test.fixme('login page UI, keyboard and frame screenshot after leader replaces PendingPage on /login', async ({ page }) => {
+test('evidence screenshots for frame 26 comparison (TASK-010)', async ({ page }, info) => {
   await page.goto('/login');
-  await expect(page.getByRole('radiogroup', { name: 'Perfil' })).toBeVisible();
+  await expect(page.getByRole('radio', { name: 'Evaldo Avelar' })).toBeChecked();
+  await page.getByLabel('Senha da casa').fill('casa-exemplo');
+  if (info.project.name.startsWith('light')) {
+    await page.evaluate(() => (document.documentElement.dataset.theme = 'light'));
+  }
+  await page.screenshot({ path: `docs/design/evidence/TASK-010/login-${info.project.name}.png` });
 });
