@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react';
+import { forwardRef, type ButtonHTMLAttributes } from 'react';
 import { Icon, type IconName } from './Icon';
 
 export type ButtonVariant = 'primary' | 'outline' | 'danger' | 'ghost';
@@ -17,10 +17,13 @@ interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 
   label: string;
 }
 
-export function IconButton({ icon, label, type = 'button', className, ...props }: IconButtonProps) {
+export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(
+  { icon, label, type = 'button', className, ...props },
+  ref,
+) {
   return (
-    <button type={type} aria-label={label} className={['el-icon-button', className].filter(Boolean).join(' ')} {...props}>
+    <button ref={ref} type={type} aria-label={label} className={['el-icon-button', className].filter(Boolean).join(' ')} {...props}>
       <Icon name={icon} />
     </button>
   );
-}
+});

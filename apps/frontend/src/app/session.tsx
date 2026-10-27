@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ApiError } from '@entrelinhas/api-client';
 import type { PreferencesUpdate, Session } from '@entrelinhas/contracts';
 import { api } from '../api';
@@ -25,14 +25,20 @@ const asApiError = (e: unknown) =>
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<SessionState>({ status: 'loading' });
   const [attempt, setAttempt] = useState(0);
+  // Every identity change (login, logout, reload) starts a new generation; async results from an
+  // older generation are discarded so a late response can never overwrite a newer session.
+  const generation = useRef(0);
 
   useEffect(() => {
     const controller = new AbortController();
+    const started = generation.current;
     api.getSession({ signal: controller.signal }).then(
-      (session) => setState({ status: 'authenticated', session }),
+      (session) => {
+        if (generation.current === started) setState({ status: 'authenticated', session });
+      },
       (e: unknown) => {
         const error = asApiError(e);
-        if (error.code === 'aborted') return;
+        if (error.code === 'aborted' || generation.current !== started) return;
         setState(error.status === 401 ? { status: 'anonymous' } : { status: 'error', error });
       },
     );
@@ -46,19 +52,26 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, [theme]);
 
   const reload = useCallback(() => {
+    generation.current += 1;
     setState({ status: 'loading' });
     setAttempt((n) => n + 1);
   }, []);
 
-  const signedIn = useCallback((session: Session) => setState({ status: 'authenticated', session }), []);
+  const signedIn = useCallback((session: Session) => {
+    generation.current += 1;
+    setState({ status: 'authenticated', session });
+  }, []);
 
   const signOut = useCallback(async () => {
     await api.deleteSession();
+    generation.current += 1;
     setState({ status: 'anonymous' });
   }, []);
 
   const updatePreferences = useCallback(async (update: PreferencesUpdate) => {
+    const started = generation.current;
     const preferences = await api.updatePreferences(update);
+    if (generation.current !== started) return;
     setState((current) => (current.status === 'authenticated' ? { status: 'authenticated', session: { ...current.session, preferences } } : current));
   }, []);
 

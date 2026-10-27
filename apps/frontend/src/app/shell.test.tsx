@@ -97,3 +97,44 @@ test('mobile tab bar offers the three main destinations (frame 16)', async () =>
   const tabs = await screen.findByRole('navigation', { name: 'Atalhos' });
   expect(within(tabs).getAllByRole('link').map((a) => a.textContent)).toEqual(['Biblioteca', 'Playlists', 'Fontes']);
 });
+
+describe('review TASK-005', () => {
+  test('mobile menu gives access to all destinations, theme and sign out (#1)', async () => {
+    signedIn();
+    renderApp('/library');
+    const menuButton = await screen.findByRole('button', { name: 'Menu' });
+    expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+    await userEvent.click(menuButton);
+    expect(menuButton).toHaveAttribute('aria-expanded', 'true');
+    const panel = screen.getByRole('navigation', { name: 'Menu do perfil' });
+    expect(within(panel).getByRole('link', { name: /Notificações/ })).toBeInTheDocument();
+    expect(within(panel).getByRole('link', { name: 'Capturas privadas' })).toBeInTheDocument();
+    expect(within(panel).getByRole('switch', { name: 'Tema escuro (Dracula)' })).toBeInTheDocument();
+    expect(within(panel).getByRole('button', { name: 'Sair' })).toBeInTheDocument();
+    await userEvent.keyboard('{Escape}');
+    expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+    expect(menuButton).toHaveFocus();
+    await userEvent.click(menuButton);
+    await userEvent.click(within(screen.getByRole('navigation', { name: 'Menu do perfil' })).getByRole('link', { name: 'Capturas privadas' }));
+    expect(await screen.findByRole('heading', { level: 1, name: 'Suas capturas privadas' })).toBeInTheDocument();
+    expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('other keys keep the menu open; the button toggles it closed', async () => {
+    signedIn();
+    renderApp('/library');
+    const menuButton = await screen.findByRole('button', { name: 'Menu' });
+    await userEvent.click(menuButton);
+    await userEvent.keyboard('a');
+    expect(menuButton).toHaveAttribute('aria-expanded', 'true');
+    await userEvent.click(menuButton);
+    expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByRole('navigation', { name: 'Menu do perfil' })).toBeNull();
+  });
+
+  test('redirect to login keeps the full location including query (#4)', async () => {
+    const router = renderApp('/library?view=list');
+    await screen.findByRole('heading', { level: 1, name: 'Quem vai ouvir?' });
+    expect(router.state.location.state).toEqual({ from: '/library?view=list' });
+  });
+});

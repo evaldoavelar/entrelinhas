@@ -45,3 +45,58 @@ test('unmounting during the session load aborts without updating state', async (
   await new Promise((r) => setTimeout(r, 20));
   expect(errors).not.toHaveBeenCalled();
 });
+
+describe('review TASK-005 races', () => {
+  const sessionFor = (index: number, theme: 'dark' | 'light') =>
+    ({ profile: profiles[index]!, preferences: { theme, library_view: 'cards' }, unread_notifications: 0, private_unlocked: false }) as const;
+
+  test('a late preferences response from profile A never changes profile B (#2)', async () => {
+    let release: () => void = () => undefined;
+    let called: () => void = () => undefined;
+    const handlerCalled = new Promise<void>((r) => (called = r));
+    server.use(
+      http.patch(
+        '/v1/me/preferences',
+        () =>
+          new Promise<Response>((resolve) => {
+            release = () => resolve(HttpResponse.json({ theme: 'light', library_view: 'cards' }));
+            called();
+          }),
+      ),
+    );
+    const { result } = renderHook(() => useSession(), { wrapper });
+    await waitFor(() => expect(result.current.state.status).toBe('anonymous'));
+    act(() => result.current.signedIn(sessionFor(0, 'dark')));
+    let pending: Promise<void> = Promise.resolve();
+    act(() => {
+      pending = result.current.updatePreferences({ theme: 'light' });
+    });
+    await handlerCalled;
+    act(() => result.current.signedIn(sessionFor(1, 'dark')));
+    release();
+    await act(() => pending);
+    expect(result.current.state).toMatchObject({ status: 'authenticated', session: { profile: { id: 'prof_ana' }, preferences: { theme: 'dark' } } });
+  });
+
+  test('the initial session load cannot overwrite a session obtained by login (#3)', async () => {
+    let release: () => void = () => undefined;
+    let called: () => void = () => undefined;
+    const handlerCalled = new Promise<void>((r) => (called = r));
+    server.use(
+      http.get(
+        '/v1/session',
+        () =>
+          new Promise<Response>((resolve) => {
+            release = () => resolve(HttpResponse.json({ error: { code: 'unauthenticated', message: 'x' } }, { status: 401 }));
+            called();
+          }),
+      ),
+    );
+    const { result } = renderHook(() => useSession(), { wrapper });
+    await handlerCalled;
+    act(() => result.current.signedIn(sessionFor(0, 'dark')));
+    release();
+    await new Promise((r) => setTimeout(r, 20));
+    expect(result.current.state.status).toBe('authenticated');
+  });
+});

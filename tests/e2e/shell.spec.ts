@@ -11,6 +11,18 @@ test('signed-in shell: navigation, current page and theme switch', async ({ page
     await expect(page.getByRole('navigation', { name: 'Principal' })).toBeHidden();
     await tabs.getByRole('link', { name: 'Playlists' }).click();
     await expect(page.getByRole('heading', { level: 1, name: 'Playlists' })).toBeVisible();
+    // Review TASK-005 #1: theme and sign out reachable on mobile through the header menu.
+    const menu = page.getByRole('button', { name: 'Menu' });
+    await menu.click();
+    const panel = page.getByRole('navigation', { name: 'Menu do perfil' });
+    await panel.getByRole('switch', { name: 'Tema escuro (Dracula)' }).click();
+    await expect(html).toHaveAttribute('data-theme', 'light');
+    await page.keyboard.press('Escape');
+    await expect(menu).toHaveAttribute('aria-expanded', 'false');
+    await expect(menu).toBeFocused();
+    await menu.click();
+    await panel.getByRole('button', { name: 'Sair' }).click();
+    await expect(page.getByRole('heading', { level: 1, name: 'Quem vai ouvir?' })).toBeVisible();
     return;
   }
 

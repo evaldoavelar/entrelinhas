@@ -21,6 +21,6 @@ export function RequireSession() {
       </div>
     );
   }
-  if (state.status === 'anonymous') return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+  if (state.status === 'anonymous') return <Navigate to="/login" replace state={{ from: `${location.pathname}${location.search}` }} />;
   return <Outlet />;
 }
