@@ -40,6 +40,11 @@
   color: var(--color-text-muted);
 }
 
+/* The live region stays in the tree (announcements need it); empty, it takes no space. */
+.search__status:empty {
+  margin: 0;
+}
+
 .search__results {
   display: grid;
   justify-items: start;

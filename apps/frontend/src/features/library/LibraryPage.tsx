@@ -40,10 +40,13 @@ export function LibraryPage() {
   const q = params.get('q') ?? undefined;
   const [searchText, setSearchText] = useState(q ?? '');
   // q changed from outside the box (link, back button): show it instead of re-applying old text.
+  // Our own debounced push is skipped: the navigation renders in a transition, so the user may
+  // already have typed more by then.
   const [shownQ, setShownQ] = useState(q);
+  const [pushedQ, setPushedQ] = useState(q);
   if (q !== shownQ) {
     setShownQ(q);
-    if ((q ?? '') !== searchText.trim()) setSearchText(q ?? '');
+    if (q !== pushedQ && (q ?? '') !== searchText.trim()) setSearchText(q ?? '');
   }
   const [viewError, setViewError] = useState('');
   const [categories, setCategories] = useState<Category[]>([]);
@@ -75,7 +78,10 @@ export function LibraryPage() {
   useEffect(() => {
     const trimmed = searchText.trim();
     if (trimmed === (q ?? '')) return;
-    const timer = setTimeout(() => setParam({ q: trimmed || undefined }), SEARCH_DEBOUNCE_MS);
+    const timer = setTimeout(() => {
+      setPushedQ(trimmed || undefined);
+      setParam({ q: trimmed || undefined });
+    }, SEARCH_DEBOUNCE_MS);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- setParam is stable in behaviour; q drives re-sync
   }, [searchText, q]);

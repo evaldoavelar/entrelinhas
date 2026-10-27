@@ -24,7 +24,8 @@ interface ListState<T> {
 const asApiError = (e: unknown) => e as ApiError;
 
 // First page for the current query, then cursor pages over the server snapshot. A query change
-// aborts in-flight requests so stale pages never mix with new results. A null query stays idle.
+// aborts in-flight requests, and any answer for an aborted request is ignored, so stale pages never
+// mix with new results. A null query stays idle.
 // `fetchPage` must be stable (module-level), the query is compared by value.
 export function usePagedList<Q, T>(query: Q | null, fetchPage: FetchPage<Q, T>) {
   const initial = (): ListState<T> => ({ items: [], total: 0, nextCursor: null, status: query === null ? 'idle' : 'loading', error: null });
@@ -49,7 +50,9 @@ export function usePagedList<Q, T>(query: Q | null, fetchPage: FetchPage<Q, T>) 
     const current = JSON.parse(key) as Q | null;
     if (current === null) return () => abort.abort();
     fetchPage(current, undefined, abort.signal).then(
-      (page) => setState({ items: page.items, total: page.total, nextCursor: page.next_cursor, status: 'ready', error: null }),
+      (page) => {
+        if (!abort.signal.aborted) setState({ items: page.items, total: page.total, nextCursor: page.next_cursor, status: 'ready', error: null });
+      },
       (e: unknown) => {
         if (!abort.signal.aborted) setState((s) => ({ ...s, items: [], total: 0, nextCursor: null, status: 'error', error: asApiError(e) }));
       },
@@ -64,8 +67,10 @@ export function usePagedList<Q, T>(query: Q | null, fetchPage: FetchPage<Q, T>) 
     failedMore.current = false;
     setState((s) => ({ ...s, status: 'loading-more', error: null }));
     fetchPage(JSON.parse(key) as Q, cursor, signal).then(
-      (page) =>
-        setState((s) => ({ items: [...s.items, ...page.items], total: page.total, nextCursor: page.next_cursor, status: 'ready', error: null })),
+      (page) => {
+        if (signal.aborted) return;
+        setState((s) => ({ items: [...s.items, ...page.items], total: page.total, nextCursor: page.next_cursor, status: 'ready', error: null }));
+      },
       (e: unknown) => {
         if (signal.aborted) return;
         failedMore.current = true;

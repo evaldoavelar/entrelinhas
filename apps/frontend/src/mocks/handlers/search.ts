@@ -19,7 +19,7 @@ const fold = (char: string) =>
     .toLowerCase();
 
 // Accent- and case-insensitive search that reports the match in original-text positions.
-function findMatch(text: string, q: string): { start: number; end: number } | null {
+export function findMatch(text: string, q: string): { start: number; end: number } | null {
   let folded = '';
   const origin: number[] = [];
   for (let i = 0; i < text.length; i++) {
@@ -31,22 +31,33 @@ function findMatch(text: string, q: string): { start: number; end: number } | nu
   const needle = [...q].map(fold).join('');
   const at = folded.indexOf(needle);
   if (at < 0 || needle.length === 0) return null;
-  return { start: origin[at] as number, end: (origin[at + needle.length - 1] as number) + 1 };
+  // Combining marks fold to nothing; keep the ones after the last matched letter inside the match.
+  let end = (origin[at + needle.length - 1] as number) + 1;
+  while (end < text.length && /[̀-ͯ]/.test(text[end] as string)) end++;
+  return { start: origin[at] as number, end };
 }
 
 // Frame 15 shows a short excerpt around the match ("…um veículo submarino de pesquisa…").
 const CONTEXT = 12;
 const SHORT_TEXT = 80;
 
-function textSnippet(text: string, match: { start: number; end: number }): Segment[] {
+export function textSnippet(text: string, match: { start: number; end: number }): Segment[] {
   let from = 0;
   let to = text.length;
   if (text.length > SHORT_TEXT) {
     from = Math.max(0, match.start - CONTEXT);
     to = Math.min(text.length, match.end + CONTEXT);
-    // Do not cut words in half at the edges.
-    if (from > 0) from = text.indexOf(' ', from) + 1 || from;
-    if (to < text.length) to = text.lastIndexOf(' ', to) > match.end ? text.lastIndexOf(' ', to) : to;
+    // Never cut a word at the edges: move inward to a space outside the match, or outward to the
+    // whole word when the window edge falls inside the word that touches the match.
+    if (from > 0) {
+      const space = text.indexOf(' ', from);
+      from = space >= 0 && space < match.start ? space + 1 : text.lastIndexOf(' ', match.start - 1) + 1;
+    }
+    if (to < text.length) {
+      const inward = text.lastIndexOf(' ', to);
+      const outward = text.indexOf(' ', to);
+      to = inward > match.end ? inward : outward >= 0 ? outward : text.length;
+    }
   }
   const segments: Segment[] = [
     { text: `${from > 0 ? '…' : ''}${text.slice(from, match.start)}`, highlight: false },

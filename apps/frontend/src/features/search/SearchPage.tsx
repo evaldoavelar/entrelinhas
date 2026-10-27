@@ -83,10 +83,13 @@ export function SearchPage() {
   const q = params.get('q')?.trim() || undefined;
   const [searchText, setSearchText] = useState(q ?? '');
   // q changed from outside the box (link, back button): show it instead of re-applying old text.
+  // Our own debounced push is skipped: the navigation renders in a transition, so the user may
+  // already have typed more by then.
   const [shownQ, setShownQ] = useState(q);
+  const [pushedQ, setPushedQ] = useState(q);
   if (q !== shownQ) {
     setShownQ(q);
-    if ((q ?? '') !== searchText.trim()) setSearchText(q ?? '');
+    if (q !== pushedQ && (q ?? '') !== searchText.trim()) setSearchText(q ?? '');
   }
   const input = useRef<HTMLInputElement>(null);
   const titleId = useId();
@@ -96,12 +99,16 @@ export function SearchPage() {
   useEffect(() => {
     const trimmed = searchText.trim();
     if (trimmed === (q ?? '')) return;
-    const timer = setTimeout(() => setParams(trimmed ? { q: trimmed } : {}, { replace: true }), SEARCH_DEBOUNCE_MS);
+    const timer = setTimeout(() => {
+      setPushedQ(trimmed || undefined);
+      setParams(trimmed ? { q: trimmed } : {}, { replace: true });
+    }, SEARCH_DEBOUNCE_MS);
     return () => clearTimeout(timer);
   }, [searchText, q, setParams]);
 
   const clear = () => {
     setSearchText('');
+    setPushedQ(undefined);
     setParams({}, { replace: true });
     input.current?.focus();
   };
@@ -132,15 +139,12 @@ export function SearchPage() {
         </Button>
       </div>
 
-      {results.status === 'idle' ? <p className="search__status">Digite um termo para buscar em todos os sites.</p> : null}
-      {results.status === 'loading' ? (
-        <p role="status" className="search__status">
-          Buscando…
-        </p>
-      ) : null}
-      {results.status === 'ready' && results.total === 0 ? (
-        <p className="search__status">{`Nenhuma leitura encontrada para “${q ?? ''}”.`}</p>
-      ) : null}
+      {/* One live region for idle, loading and "no results", so every outcome is announced. */}
+      <p role="status" className="search__status">
+        {results.status === 'idle' ? 'Digite um termo para buscar em todos os sites.' : null}
+        {results.status === 'loading' ? 'Buscando…' : null}
+        {results.status === 'ready' && results.total === 0 ? `Nenhuma leitura encontrada para “${q ?? ''}”.` : null}
+      </p>
 
       {results.items.length > 0 ? (
         <>

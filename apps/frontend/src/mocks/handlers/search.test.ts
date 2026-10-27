@@ -59,3 +59,22 @@ test('empty scenario and scenario overrides', async () => {
   setScenario('unavailable');
   await expect(api.search({ q: 'submarino' })).rejects.toMatchObject({ status: 503 });
 });
+
+describe('review agy r1', () => {
+  test('a decomposed accent at the end of the match stays inside the highlight (#1)', async () => {
+    const { findMatch } = await import('./search');
+    const text = 'um café forte';
+    const match = findMatch(text, 'café')!;
+    expect(text.slice(match.start, match.end)).toBe('café');
+  });
+
+  test('snippet edges never cut a word nor drop the context before the match (#2)', async () => {
+    const { textSnippet, findMatch } = await import('./search');
+    const long = 'Texto longo de teste com mais de oitenta caracteres e certeza: aqui temos inconstitucionalissimamente longa demais.';
+    const right = textSnippet(long, findMatch(long, 'temos')!).map((s) => s.text).join('');
+    expect(right).toContain('temos inconstitucionalissimamente');
+    const glued = 'Um parágrafo bem comprido para passar de oitenta caracteres: identificador_muito_longo_1234 aparece aqui no fim.';
+    const left = textSnippet(glued, findMatch(glued, '1234')!);
+    expect(left[0]?.text).toContain('identificador_muito_longo_');
+  });
+});

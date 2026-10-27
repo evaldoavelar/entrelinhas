@@ -30,3 +30,13 @@ Diferenças justificadas: "Baixar" e "⋯" desabilitados com descrição acessí
 ## Limitações
 
 - `Ouvir` leva a `/articles/:id`, rota ainda inexistente (cai no `*` → biblioteca) até a tarefa do player/artigo.
+
+## Revisão agy r1 (REPROVADO) → correções
+
+1. Acento decomposto (NFD) no fim do match ficava fora do realce: `findMatch` estende o fim sobre marcas combinantes. RED: `search.test.ts › review agy r1 › a decomposed accent…` (`'cafe'` em vez de `'café'` decomposto).
+2. Bordas do trecho cortavam palavra longa / descartavam o contexto à esquerda: borda vai para um espaço fora do match ou se expande até a palavra inteira. RED: `…snippet edges never cut a word…`.
+3. O debounce podia sobrescrever digitação nova (a navegação do React Router v7 é renderizada em transição; tecla digitada entre o disparo do timer e esse render era apagada): o `q` que a própria página empurrou é lembrado (`pushedQ`) e não ressincroniza o campo; só mudanças externas (link, voltar) o fazem. Corrigido também na biblioteca (mesmo padrão, TASK-012). **Sem RED determinístico**: a intercalação depende do agendamento de transição e não é reproduzível em jsdom; os testes de sincronização externa (#1 da TASK-012 e "Limpar") continuam verdes.
+4. Resposta de pedido já abortado gravava o estado se o fetcher ignorasse o abort: guardas de abort também nos sucessos de `usePagedList`. RED: `useSites.test.ts › a result that arrives after its query was replaced is ignored` (itens da consulta antiga apareciam).
+5. "Nenhuma leitura encontrada" não era anunciado: uma única região `role="status"` para ocioso/buscando/sem resultado (sem margem quando vazia). RED: teste CA67 agora espera o anúncio em `role="status"`.
+
+Após correções: 199 testes unitários verdes; e2e busca + biblioteca 32 passed 2× sem alterar baselines.

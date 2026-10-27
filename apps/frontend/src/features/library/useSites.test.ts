@@ -67,3 +67,17 @@ test('retry after a failed next page and a failed new filter reloads the new fir
   await waitFor(() => expect(result.current.status).toBe('ready'));
   expect(result.current.items).toHaveLength(6);
 });
+
+test('a result that arrives after its query was replaced is ignored (review agy TASK-013 #4)', async () => {
+  const { usePagedList } = await import('../shared/usePagedList');
+  const resolvers: ((page: { items: string[]; next_cursor: null; total: number }) => void)[] = [];
+  // A fetcher that ignores the abort signal, as a defensive check on the hook itself.
+  const fetchPage = () => new Promise<{ items: string[]; next_cursor: null; total: number }>((resolve) => resolvers.push(resolve));
+  const { result, rerender } = renderHook((q: string) => usePagedList({ q }, fetchPage), { initialProps: 'old' });
+  rerender('new');
+  act(() => resolvers[0]?.({ items: ['old result'], next_cursor: null, total: 1 }));
+  await settle();
+  expect(result.current.items).toEqual([]);
+  act(() => resolvers[1]?.({ items: ['new result'], next_cursor: null, total: 1 }));
+  await waitFor(() => expect(result.current.items).toEqual(['new result']));
+});

@@ -56,7 +56,8 @@ test('listen opens the article; download and more actions are not available yet 
 
 test('query markup is shown as text and never interpreted (CA67)', async () => {
   renderSearch(`/search?q=${encodeURIComponent('<img src=x onerror=alert(1)>')}`);
-  expect(await screen.findByText('Nenhuma leitura encontrada para “<img src=x onerror=alert(1)>”.')).toBeInTheDocument();
+  // The live region announces the outcome (review agy r1 #5).
+  await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('Nenhuma leitura encontrada para “<img src=x onerror=alert(1)>”.'));
   expect(document.querySelector('img')).toBeNull();
 });
 
