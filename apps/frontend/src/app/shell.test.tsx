@@ -61,7 +61,8 @@ test('theme follows the profile preference and the switch persists it (RF40, RF4
 
 test('a theme change that cannot be saved keeps the theme and says so', async () => {
   signedIn();
-  renderApp('/library');
+  // A page without its own requests: the global scenario below must only hit the preference save.
+  renderApp('/playlists');
   const toggle = await screen.findByRole('switch', { name: 'Tema escuro (Dracula)' });
   const before = document.documentElement.dataset.theme;
   setScenario('unavailable');
