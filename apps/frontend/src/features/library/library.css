@@ -311,6 +311,14 @@
   margin-top: 0;
 }
 
+.library__global-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: var(--space-3);
+  color: var(--color-accent-text);
+  font-size: var(--text-sm);
+}
 .library__view-error {
   margin-top: var(--space-3);
   color: var(--color-danger);
