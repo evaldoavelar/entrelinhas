@@ -23,6 +23,7 @@ export function SiteDetailPage() {
   const now = new Date();
   const configNoteId = useId();
   const actionsNoteId = useId();
+  const playlistNoteId = useId();
 
   if (status === 'error' && error?.status === 404) {
     return (
@@ -155,9 +156,12 @@ export function SiteDetailPage() {
       </section>
 
       <div className="site-detail__bottom-actions">
-        <Button variant="outline" disabled title="Adicionar à playlist indisponível nesta versão">
+        <Button variant="outline" disabled aria-describedby={playlistNoteId}>
           Adicionar todos à playlist
         </Button>
+        <p id={playlistNoteId} className="visually-hidden">
+          Playlists chegam em uma sprint posterior.
+        </p>
         {nextCursor ? (
           <Button variant="outline" onClick={loadMore} disabled={status === 'loading-more'}>
             {status === 'loading-more' ? 'Carregando…' : 'Carregar mais artigos'}

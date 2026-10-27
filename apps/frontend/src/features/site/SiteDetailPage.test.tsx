@@ -187,4 +187,5 @@ test('disabled actions say why, to assistive technology (a11y)', async () => {
   const more = screen.getAllByRole('button', { name: /Mais opções para/ })[0] as HTMLElement;
   expect(more).toHaveAccessibleDescription('Baixar e mais opções chegam com o player.');
   expect(screen.getByRole('button', { name: 'Configurar fonte' })).toHaveAccessibleDescription('Configuração de fonte indisponível nesta versão.');
+  expect(screen.getByRole('button', { name: 'Adicionar todos à playlist' })).toHaveAccessibleDescription('Playlists chegam em uma sprint posterior.');
 });

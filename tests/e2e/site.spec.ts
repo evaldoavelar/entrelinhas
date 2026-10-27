@@ -59,7 +59,7 @@ test('site detail journey: open from library, load more, filter unheard, keyboar
   await page.keyboard.press('Tab'); // move focus
 });
 
-test('site detail visual baseline (frame 04)', async ({ page }) => {
+test('site detail visual baseline (frame 04)', async ({ page }, info) => {
   await page.goto('/sites/site_horizonte?mockSession=prof_evaldo');
   await expect(page.getByRole('heading', { level: 1, name: 'Horizonte' })).toBeVisible();
 
@@ -68,5 +68,6 @@ test('site detail visual baseline (frame 04)', async ({ page }) => {
 
   // Ensure no inputs/buttons retain focus
   await page.getByRole('heading', { level: 1 }).click();
+  if (info.project.name.startsWith('light')) await page.evaluate(() => (document.documentElement.dataset.theme = 'light'));
   await expect(page).toHaveScreenshot('site-detail.png');
 });

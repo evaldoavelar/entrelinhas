@@ -81,11 +81,11 @@ test('load more appends the next page of the same snapshot (CA22)', async () => 
   expect(within(list).getAllByRole('listitem')).toHaveLength(6);
   await userEvent.click(screen.getByRole('button', { name: 'Carregar mais' }));
   await waitFor(() => expect(within(list).getAllByRole('listitem').length).toBeGreaterThan(6));
-  await waitFor(async () => {
-    const more = screen.queryByRole('button', { name: 'Carregar mais' });
-    if (more) await userEvent.click(more);
-    expect(screen.queryByRole('button', { name: 'Carregar mais' })).toBeNull();
-  });
+  // "o" matches 16 posts: pages of 6, 6 and 4.
+  await waitFor(() => expect(within(list).getAllByRole('listitem')).toHaveLength(12));
+  await userEvent.click(screen.getByRole('button', { name: 'Carregar mais' }));
+  await waitFor(() => expect(within(list).getAllByRole('listitem')).toHaveLength(16));
+  expect(screen.queryByRole('button', { name: 'Carregar mais' })).toBeNull();
 });
 
 test('error shows the server message and retries', async () => {
@@ -112,7 +112,7 @@ test('back/forward to another query updates the box; erasing the text by hand cl
   await results();
   await router.navigate('/search?q=profundezas');
   await waitFor(() => expect(searchbox()).toHaveValue('profundezas'));
-  expect(within(await results()).getAllByRole('listitem')).toHaveLength(1);
+  await waitFor(async () => expect(within(await results()).getAllByRole('listitem')).toHaveLength(1));
   await userEvent.clear(searchbox());
   await waitFor(() => expect(router.state.location.search).toBe(''));
   expect(screen.getByRole('status')).toHaveTextContent('Digite um termo para buscar em todos os sites.');
