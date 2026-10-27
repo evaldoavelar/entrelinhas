@@ -15,6 +15,7 @@ Fonte consolidada de progresso. Conferir sempre contra `git log`/`git worktree l
 | TASK-004 tokens + componentes | `94dcddf`, `9519f4c`, `2957501` | aprovado |
 | TASK-012 biblioteca | `1c002d0`…`e8afeeb`, merge `eee4a98`, pós-merge `cc0e725`+teste isolado | Codex r1/r2 reprovadas (6 achados corrigidos com RED); r3 Codex interrompida (limite); **r3 agy aprovada** (`.omc/reviews/TASK-012-r3-agy.txt`) |
 | TASK-010 login casa/perfil | `44379c2` (worker Codex), `e6db425`, `6149a72`, merge `68e3852` | aprovado (r2; `.omc/reviews/TASK-010-r2.txt`) |
+| TASK-013 busca global | `a6e6c2f`…`5bfda5a`, merge `9886b83` | agy r1/r2 reprovadas (7 achados corrigidos com RED); **r3 agy aprovada** (`.omc/reviews/TASK-013-r3-agy.txt`). Verify verde na `main`: 202 testes, 60 e2e; gate diff 100% linhas / 91,4% branches. Teste de tema do shell (flaky) corrigido. |
 | TASK-005 shell/router/tema | `2957501`, `54d6caa`, `a0bf97f`, `d7cda13` | aprovado (4ª rodada, `.omc/reviews/TASK-005-r4.txt`) |
 
 Último `npm run verify` verde na `main` (merge TASK-012 + correção do teste de tema): 183 testes frontend + contracts + api-client, cobertura frontend 96,7% stmts / 90,3% branches, bundle sem MSW, 52 e2e (4 projetos) com baselines revisadas de login e biblioteca.
@@ -24,7 +25,6 @@ Fonte consolidada de progresso. Conferir sempre contra `git log`/`git worktree l
 | Tarefa | Estado | Onde | Pendência concreta |
 | --- | --- | --- | --- |
 | TASK-011 login admin | review — implementado pelo **agy** (`a239257`), revisado pelo Claude (aprovado), integrado na branch pelo líder (`c5a1285`: rotas, e2e, baselines) | branch `task/TASK-011-admin-login`, worktree `../entrelinhas-wt/TASK-011` | Falta revisão independente das mudanças do líder (Codex após 15:04 — limite de uso). verify verde (155 testes, 40 e2e). |
-| TASK-013 busca global | review — agy r1 **reprovado** (5 achados corrigidos; `f48978f` entrou com gate vermelho, corrigido em `5716028`); agy r2 em andamento | branch `task/TASK-013-search`, worktree `../entrelinhas-wt/TASK-013` | verify verde (200 testes, 60 e2e). |
 | TASK-014 detalhe do site | review — worker agy entregou (`d38df19`, comitado pelo líder); **revisão do líder reprovou** (4 achados) | branch `task/TASK-014-site-detail`, worktree `../entrelinhas-wt/TASK-014` | Após integrar TASK-013: mesclar `main`, reusar `usePagedList`, PAGE_SIZE 4 + fixtures do Horizonte (12), cursor por site, a11y; ligar rota; e2e/baselines. |
 
 ## Limitações vigentes
