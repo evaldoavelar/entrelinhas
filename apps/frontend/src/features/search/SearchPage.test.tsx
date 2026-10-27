@@ -81,7 +81,11 @@ test('load more appends the next page of the same snapshot (CA22)', async () => 
   expect(within(list).getAllByRole('listitem')).toHaveLength(6);
   await userEvent.click(screen.getByRole('button', { name: 'Carregar mais' }));
   await waitFor(() => expect(within(list).getAllByRole('listitem').length).toBeGreaterThan(6));
-  expect(screen.queryByRole('button', { name: 'Carregar mais' })).toBeNull();
+  await waitFor(async () => {
+    const more = screen.queryByRole('button', { name: 'Carregar mais' });
+    if (more) await userEvent.click(more);
+    expect(screen.queryByRole('button', { name: 'Carregar mais' })).toBeNull();
+  });
 });
 
 test('error shows the server message and retries', async () => {

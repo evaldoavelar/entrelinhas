@@ -92,3 +92,14 @@ Conforme a instrução ao worker nº 12 ("Não saia do sandbox nem peça elevaç
 3. **Baixa — `mocks/handlers/site.ts`: cursor não amarrado ao site** (cursor do site A em `/v1/sites/B/posts` devolve posts de A) e prefixo `snap_` igual ao da biblioteca.
 4. **Baixa — `SiteDetailPage.tsx`: "BIBLIOTECA" em maiúsculas no texto** (o CSS já faz uppercase; leitor de tela pode soletrar); ações desabilitadas explicadas só por `title` ("Configurar fonte", "Adicionar todos à playlist"); id fixo `articles-heading`.
 - Plano: integrar TASK-013 primeiro; depois mesclar a `main` aqui, corrigir 1–4 com RED, ligar `/sites/:siteId`, registrar `siteHandlers`, rodar e2e e revisar baselines.
+
+## Integração do líder (27/10, sessão 3)
+
+Achados da revisão do líder corrigidos com RED → GREEN:
+
+1. `useSiteDetail` agora usa `features/shared/usePagedList` (cabeçalho do site em fetch independente); `PAGE_SIZE` 4; +8 posts do Horizonte em `mocks/fixtures.ts` (12, sem "submarino"/"profundezas"); teste "load more" da busca ajustado (a contagem de "o" cresceu).
+2. Cursor do handler amarrado a site + filtro (400 `invalid_cursor` para outro site/filtro).
+3. a11y: "Biblioteca" em texto normal; motivo acessível (`aria-describedby` + `visually-hidden`, `useId`) em Baixar/menu/Configurar fonte.
+4. `siteHandlers` registrado em `mocks/handlers/index.ts`; rota `/sites/:siteId` ligada.
+
+E2E: o worker não pôde rodar Playwright; o líder corrigiu o locator ambíguo "Todos" (casava com "Adicionar todos à playlist") e as contagens (4/8/12). Baselines `site-detail` (dark/light × desktop/mobile) geradas pela primeira vez pelo líder; revisão visual: dark-desktop 1440×1000 comparado ao frame 04 (`04 · Detalhes da Fonte — Horizonte.png`, aberto). Diferenças justificadas: sidebar/mini-player/item ativo do menu pertencem ao shell/TASK-021; "Configurar fonte" desabilitado por design; capa genérica sem moldura no frame; cor do subtítulo/meta mais neutra.

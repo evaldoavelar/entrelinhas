@@ -18,7 +18,7 @@ test('loads site and first page of posts on mount', async () => {
   await waitFor(() => expect(result.current.status).toBe('ready'));
   expect(result.current.site?.name).toBe('Horizonte');
   expect(result.current.posts).toHaveLength(PAGE_SIZE);
-  expect(result.current.total).toBe(4);
+  expect(result.current.total).toBe(12);
   expect(result.current.nextCursor).not.toBeNull();
 });
 
@@ -37,7 +37,7 @@ test('changing filter resets state and fetches filtered posts', async () => {
 
   await waitFor(() => expect(result.current.status).toBe('ready'));
   expect(result.current.posts.every((p) => p.listen_state === 'unheard')).toBe(true);
-  expect(result.current.total).toBe(2);
+  expect(result.current.total).toBe(6);
 });
 
 test('loadMore appends posts using nextCursor', async () => {
@@ -50,12 +50,12 @@ test('loadMore appends posts using nextCursor', async () => {
   });
 
   await waitFor(() => expect(result.current.status).toBe('ready'));
-  expect(result.current.posts).toHaveLength(4);
-  expect(result.current.nextCursor).toBeNull();
+  expect(result.current.posts).toHaveLength(PAGE_SIZE * 2);
+  expect(result.current.nextCursor).not.toBeNull();
 });
 
 test('loadMore does nothing when nextCursor is null', async () => {
-  const { result } = renderHook(() => useSiteDetail('site_horizonte', 'unheard'));
+  const { result } = renderHook(() => useSiteDetail('site_palavra', 'all'));
   await waitFor(() => expect(result.current.status).toBe('ready'));
   expect(result.current.nextCursor).toBeNull();
 
@@ -105,7 +105,7 @@ test('retry after failed loadMore retries the page and preserves posts', async (
   });
 
   await waitFor(() => expect(result.current.status).toBe('ready'));
-  expect(result.current.posts).toHaveLength(4);
+  expect(result.current.posts).toHaveLength(PAGE_SIZE * 2);
 });
 
 test('retry after failed loadMore followed by filter change retries initial query instead', async () => {

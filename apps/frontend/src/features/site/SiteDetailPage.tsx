@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
 import { Button } from '../../components';
 import { ArticleCard } from './ArticleCard';
@@ -20,6 +21,8 @@ export function SiteDetailPage() {
 
   const { site, posts, nextCursor, status, error, loadMore, retry } = useSiteDetail(siteId, filter);
   const now = new Date();
+  const configNoteId = useId();
+  const actionsNoteId = useId();
 
   if (status === 'error' && error?.status === 404) {
     return (
@@ -64,7 +67,7 @@ export function SiteDetailPage() {
     <div className="page site-detail">
       <nav aria-label="Navegação estrutural">
         <Link to="/library" className="page__eyebrow site-detail__eyebrow">
-          BIBLIOTECA
+          Biblioteca
         </Link>
       </nav>
 
@@ -79,10 +82,13 @@ export function SiteDetailPage() {
           variant="outline"
           disabled
           className="site-detail__config"
-          title="Configuração de fonte indisponível nesta versão"
+          aria-describedby={configNoteId}
         >
           Configurar fonte
         </Button>
+        <p id={configNoteId} className="visually-hidden">
+          Configuração de fonte indisponível nesta versão.
+        </p>
       </header>
 
       <div className="site-detail__filter-bar">
@@ -128,9 +134,14 @@ export function SiteDetailPage() {
         {posts.length > 0 ? (
           <ul className="site-detail__list" aria-label="Artigos convertidos">
             {posts.map((post) => (
-              <ArticleCard key={post.id} post={post} />
+              <ArticleCard key={post.id} post={post} actionsNoteId={actionsNoteId} />
             ))}
           </ul>
+        ) : null}
+        {posts.length > 0 ? (
+          <p id={actionsNoteId} className="visually-hidden">
+            Baixar e mais opções chegam com o player.
+          </p>
         ) : null}
 
         {status === 'error' && error ? (

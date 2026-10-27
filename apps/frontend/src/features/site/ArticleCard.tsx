@@ -4,7 +4,7 @@ import { Button, Chip, IconButton } from '../../components';
 import { formatArticleDate, formatArticleDuration, formatListenState } from './format';
 import { ArticleCover } from './ArticleCover';
 
-export function ArticleCard({ post }: { post: Post }) {
+export function ArticleCard({ post, actionsNoteId }: { post: Post; actionsNoteId: string }) {
   const date = formatArticleDate(post.published_at);
   const duration = formatArticleDuration(post.duration_seconds);
   const tagsText = post.tags.slice(0, 3).join(', ');
@@ -28,8 +28,8 @@ export function ArticleCard({ post }: { post: Post }) {
         <Button
           variant="outline"
           disabled
-          title="Download indisponível nesta versão"
           aria-label={`Baixar áudio: ${post.title} (indisponível)`}
+          aria-describedby={actionsNoteId}
         >
           Baixar
         </Button>
@@ -37,7 +37,7 @@ export function ArticleCard({ post }: { post: Post }) {
           icon="more"
           disabled
           label={`Mais opções para ${post.title} (indisponível)`}
-          title="Mais opções indisponíveis nesta versão"
+          aria-describedby={actionsNoteId}
         />
       </div>
     </li>

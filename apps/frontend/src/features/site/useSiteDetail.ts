@@ -1,105 +1,65 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { ApiError } from '@entrelinhas/api-client';
 import type { Post, Site } from '@entrelinhas/contracts';
 import { api } from '../../api';
+import { usePagedList, type FetchPage } from '../shared/usePagedList';
 
-export const PAGE_SIZE = 2;
+export const PAGE_SIZE = 4;
 
-type Status = 'loading' | 'ready' | 'loading-more' | 'error';
+type Filter = 'all' | 'unheard';
 
-interface SiteDetailState {
+const fetchPosts: FetchPage<{ siteId: string; filter: Filter }, Post> = (query, cursor, signal) =>
+  api.listSitePosts(query.siteId, { filter: query.filter, limit: PAGE_SIZE, ...(cursor ? { cursor } : {}) }, { signal });
+
+interface SiteState {
   site: Site | null;
-  posts: Post[];
-  total: number;
-  nextCursor: string | null;
-  status: Status;
   error: ApiError | null;
 }
 
-const initial: SiteDetailState = {
-  site: null,
-  posts: [],
-  total: 0,
-  nextCursor: null,
-  status: 'loading',
-  error: null,
-};
-
-const asApiError = (e: unknown) => e as ApiError;
-
-export function useSiteDetail(siteId: string, filter: 'all' | 'unheard') {
-  const [state, setState] = useState<SiteDetailState>(initial);
+// The site header and its posts load independently: the header does not depend on the filter.
+export function useSiteDetail(siteId: string, filter: Filter) {
+  const list = usePagedList({ siteId, filter }, fetchPosts);
   const [attempt, setAttempt] = useState(0);
-  const controller = useRef(new AbortController());
-  const failedMore = useRef(false);
+  const [siteState, setSiteState] = useState<SiteState>({ site: null, error: null });
 
-  // New filters (or a retry) start from an empty loading state, reset during render.
-  const requestKey = `${siteId}#${filter}#${attempt}`;
-  const [shownKey, setShownKey] = useState(requestKey);
-  if (shownKey !== requestKey) {
-    setShownKey(requestKey);
-    setState(initial);
+  // Another site (or a retry) starts without the previous header, reset during render.
+  const siteKey = `${siteId}#${attempt}`;
+  const [shownKey, setShownKey] = useState(siteKey);
+  if (shownKey !== siteKey) {
+    setShownKey(siteKey);
+    setSiteState({ site: null, error: null });
   }
 
   useEffect(() => {
     const abort = new AbortController();
-    controller.current = abort;
-    failedMore.current = false;
-
-    Promise.all([
-      api.getSite(siteId, { signal: abort.signal }),
-      api.listSitePosts(siteId, { filter, limit: PAGE_SIZE }, { signal: abort.signal }),
-    ]).then(
-      ([site, page]) => {
-        setState({
-          site,
-          posts: page.items,
-          total: page.total,
-          nextCursor: page.next_cursor,
-          status: 'ready',
-          error: null,
-        });
+    api.getSite(siteId, { signal: abort.signal }).then(
+      (site) => {
+        if (!abort.signal.aborted) setSiteState({ site, error: null });
       },
       (e: unknown) => {
-        if (!abort.signal.aborted) {
-          setState((s) => ({ ...s, status: 'error', error: asApiError(e) }));
-        }
+        if (!abort.signal.aborted) setSiteState({ site: null, error: e as ApiError });
       },
     );
-
     return () => abort.abort();
-  }, [siteId, filter, attempt]);
+  }, [siteId, attempt]);
 
-  const loadMore = useCallback(() => {
-    const cursor = state.nextCursor;
-    if (!cursor) return;
-    const signal = controller.current.signal;
-    failedMore.current = false;
-    setState((s) => ({ ...s, status: 'loading-more', error: null }));
-
-    api.listSitePosts(siteId, { filter, cursor, limit: PAGE_SIZE }, { signal }).then(
-      (page) => {
-        setState((s) => ({
-          ...s,
-          posts: [...s.posts, ...page.items],
-          total: page.total,
-          nextCursor: page.next_cursor,
-          status: 'ready',
-          error: null,
-        }));
-      },
-      (e: unknown) => {
-        if (signal.aborted) return;
-        failedMore.current = true;
-        setState((s) => ({ ...s, status: 'error', error: asApiError(e) }));
-      },
-    );
-  }, [siteId, filter, state.nextCursor]);
-
+  const { retry: retryList } = list;
   const retry = useCallback(() => {
-    if (failedMore.current) loadMore();
-    else setAttempt((n) => n + 1);
-  }, [loadMore]);
+    if (siteState.error) setAttempt((n) => n + 1);
+    retryList();
+  }, [siteState.error, retryList]);
 
-  return { ...state, loadMore, retry };
+  const { site, error: siteError } = siteState;
+  const status = siteError ? 'error' : !site && list.status !== 'error' ? 'loading' : list.status;
+
+  return {
+    site,
+    posts: list.items,
+    total: list.total,
+    nextCursor: list.nextCursor,
+    status,
+    error: siteError ?? list.error,
+    loadMore: list.loadMore,
+    retry,
+  };
 }

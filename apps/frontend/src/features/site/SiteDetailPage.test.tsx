@@ -6,6 +6,7 @@ import { db } from '../../mocks/db';
 import { server } from '../../mocks/server';
 import { siteHandlers } from '../../mocks/handlers/site';
 import { SiteDetailPage } from './SiteDetailPage';
+import { PAGE_SIZE } from './useSiteDetail';
 
 beforeEach(() => {
   server.use(...siteHandlers);
@@ -48,7 +49,7 @@ test('renders site details: eyebrow, title, domain and conversion time', async (
   expect(screen.getByRole('status')).toHaveTextContent('Carregando site…');
 
   await waitFor(() => expect(screen.getByRole('heading', { level: 1, name: 'Horizonte' })).toBeInTheDocument());
-  expect(screen.getByRole('link', { name: 'BIBLIOTECA' })).toHaveAttribute('href', '/library');
+  expect(screen.getByRole('link', { name: 'Biblioteca' })).toHaveAttribute('href', '/library');
   expect(screen.getByText(/horizonte\.example · Última conversão/)).toBeInTheDocument();
   expect(screen.getByText('12 áudios')).toBeInTheDocument();
   expect(screen.getByText('Mais recentes primeiro')).toBeInTheDocument();
@@ -113,8 +114,13 @@ test('loads more articles when "Carregar mais artigos" is clicked', async () => 
 
   await user.click(loadMoreButton);
 
-  await waitFor(() => expect(screen.getByText('Uma viagem pelas florestas brasileiras')).toBeInTheDocument());
-  // Now all 4 posts are loaded, cursor is exhausted
+  await waitFor(() => expect(screen.getByText('Por que as marés mudam a cada dia')).toBeInTheDocument());
+  expect(screen.getAllByRole('listitem')).toHaveLength(PAGE_SIZE * 2);
+
+  await user.click(screen.getByRole('button', { name: 'Carregar mais artigos' }));
+  await waitFor(() => expect(screen.getByText('Mercados de bairro e a economia local')).toBeInTheDocument());
+  // All 12 posts are loaded, cursor is exhausted
+  expect(screen.getAllByRole('listitem')).toHaveLength(12);
   expect(screen.queryByRole('button', { name: 'Carregar mais artigos' })).not.toBeInTheDocument();
 });
 
@@ -169,5 +175,16 @@ test('renders error state on retry when loadMore failed after articles were load
   db.sessionProfileId = 'prof_evaldo';
   await user.click(screen.getByRole('button', { name: 'Tentar de novo' }));
 
-  await waitFor(() => expect(screen.getByText('Uma viagem pelas florestas brasileiras')).toBeInTheDocument());
+  await waitFor(() => expect(screen.getByText('Por que as marés mudam a cada dia')).toBeInTheDocument());
+});
+
+test('disabled actions say why, to assistive technology (a11y)', async () => {
+  renderPage();
+
+  await waitFor(() => expect(screen.getByRole('heading', { level: 2, name: 'Artigos convertidos' })).toBeInTheDocument());
+  const download = screen.getAllByRole('button', { name: /Baixar áudio:/ })[0] as HTMLElement;
+  expect(download).toHaveAccessibleDescription('Baixar e mais opções chegam com o player.');
+  const more = screen.getAllByRole('button', { name: /Mais opções para/ })[0] as HTMLElement;
+  expect(more).toHaveAccessibleDescription('Baixar e mais opções chegam com o player.');
+  expect(screen.getByRole('button', { name: 'Configurar fonte' })).toHaveAccessibleDescription('Configuração de fonte indisponível nesta versão.');
 });

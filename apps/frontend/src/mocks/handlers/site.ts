@@ -7,7 +7,12 @@ import { errorResponse, getScenario, scenarioOverride } from '../scenario';
 import { unauthenticated } from './session';
 
 // Snapshot of ordered ids per query (CA22): later pages reuse the order fixed on the first page.
-const snapshots = new Map<string, string[]>();
+interface Snapshot {
+  siteId: string;
+  filter: string;
+  ids: string[];
+}
+const snapshots = new Map<string, Snapshot>();
 let snapshotSeq = 0;
 
 export const siteHandlers = [
@@ -43,9 +48,12 @@ export const siteHandlers = [
     if (query.cursor) {
       const match = /^snap_(\d+)_(\d+)$/.exec(query.cursor);
       const snapshot = match ? snapshots.get(match[1] as string) : undefined;
-      if (!snapshot || !match) return errorResponse(400, 'invalid_cursor', 'Cursor inválido ou expirado.');
+      // A cursor continues only the site and filter that issued it.
+      if (!snapshot || !match || snapshot.siteId !== params.id || snapshot.filter !== query.filter) {
+        return errorResponse(400, 'invalid_cursor', 'Cursor inválido ou expirado.');
+      }
       key = match[1] as string;
-      ids = snapshot;
+      ids = snapshot.ids;
       offset = Number(match[2]);
     } else {
       const visible = getScenario() === 'empty' ? [] : posts;
@@ -55,7 +63,7 @@ export const siteHandlers = [
         .sort((a, b) => (Date.parse(b.published_at ?? '') || 0) - (Date.parse(a.published_at ?? '') || 0))
         .map((p) => p.id);
       key = String(++snapshotSeq);
-      snapshots.set(key, ids);
+      snapshots.set(key, { siteId: String(params.id), filter: query.filter, ids });
     }
 
     const end = offset + query.limit;

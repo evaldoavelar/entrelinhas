@@ -52,16 +52,16 @@ describe('listSitePosts handler', () => {
   });
 
   test('returns posts for site ordered by published_at desc', async () => {
-    const page = await api.listSitePosts('site_horizonte', {});
+    const page = await api.listSitePosts('site_horizonte', { limit: 4 });
     expect(page.items.map((p) => p.id)).toEqual(['post_oceano', 'post_rios', 'post_energia', 'post_florestas']);
-    expect(page.total).toBe(4);
-    expect(page.next_cursor).toBeNull();
+    expect(page.total).toBe(12);
+    expect(page.next_cursor).not.toBeNull();
   });
 
   test('filters unheard posts when filter=unheard', async () => {
-    const page = await api.listSitePosts('site_horizonte', { filter: 'unheard' });
-    expect(page.items.map((p) => p.id)).toEqual(['post_rios', 'post_energia']);
-    expect(page.total).toBe(2);
+    const page = await api.listSitePosts('site_horizonte', { filter: 'unheard', limit: 3 });
+    expect(page.items.map((p) => p.id)).toEqual(['post_rios', 'post_energia', 'post_mares']);
+    expect(page.total).toBe(6);
     expect(page.items.every((p) => p.listen_state === 'unheard')).toBe(true);
   });
 
@@ -81,7 +81,13 @@ describe('listSitePosts handler', () => {
     const second = await api.listSitePosts('site_horizonte', { cursor: first.next_cursor!, limit: 2 });
     expect(second.items).toHaveLength(2);
     expect(second.items.map((p) => p.id)).toEqual(['post_energia', 'post_florestas']);
-    expect(second.next_cursor).toBeNull();
+    expect(second.next_cursor).not.toBeNull();
+  });
+
+  test('a cursor only continues the site and filter that issued it (r1 #3)', async () => {
+    const all = await api.listSitePosts('site_horizonte', { limit: 2 });
+    await expect(api.listSitePosts('site_circuito', { cursor: all.next_cursor!, limit: 2 })).rejects.toMatchObject({ status: 400 });
+    await expect(api.listSitePosts('site_horizonte', { cursor: all.next_cursor!, filter: 'unheard', limit: 2 })).rejects.toMatchObject({ status: 400 });
   });
 
   test('rejects non-matching cursor with 400', async () => {
