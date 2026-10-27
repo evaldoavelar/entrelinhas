@@ -8,6 +8,9 @@ test('signed-in shell: navigation, current page and theme switch', async ({ page
   if (info.project.name.includes('mobile')) {
     const tabs = page.getByRole('navigation', { name: 'Atalhos' });
     await expect(tabs).toBeVisible();
+    // Re-review TASK-005 #1: header sits at the top as in frame 16 (brand at y≈44), not pushed down.
+    const header = await page.getByRole('button', { name: 'Menu' }).boundingBox();
+    expect(header?.y).toBeLessThan(60);
     await expect(page.getByRole('navigation', { name: 'Principal' })).toBeHidden();
     await tabs.getByRole('link', { name: 'Playlists' }).click();
     await expect(page.getByRole('heading', { level: 1, name: 'Playlists' })).toBeVisible();

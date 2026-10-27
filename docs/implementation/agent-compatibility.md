@@ -48,3 +48,10 @@ Validação estrutural: `scripts/agents/validate-skills.sh` (frontmatter, nome =
 ## Concorrência
 
 Máximo inicial: 2 workers de implementação + líder. RAM livre medida ~3 GiB: um `vite`/`vitest`/Playwright por worktree é o teto prático; reavaliar com medição.
+
+## Limitações observadas do worker Codex (27/10, TASK-010)
+
+- `codex exec` sem `< /dev/null` ficou bloqueado lendo stdin; corrigido no procedimento (RESUME.md).
+- Sandbox `workspace-write` não grava o diretório Git de um worktree (fica em `<repo>/.git/worktrees/`): `git add` falhou com `Read-only file system`. Mitigação: passar `--add-dir <repo>/.git` ao lançar o worker; até verificar, o líder comita o trabalho do worker na branch da tarefa, com atribuição `Co-Authored-By: Codex`.
+- Sandbox recusa abrir porta local (`EPERM` em 4174): Playwright não roda dentro do worker. O líder executa o e2e na integração.
+- Como revisor `read-only`, Vitest não inicia (`EROFS` ao criar arquivo temporário); revisões Codex não reexecutam a suíte, o líder reexecuta.

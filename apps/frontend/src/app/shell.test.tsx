@@ -43,8 +43,8 @@ test('signed-in shell shows navigation, current page, profile and unread badge',
 test('root redirects to the library', async () => {
   signedIn();
   const router = renderApp('/');
-  await screen.findByRole('navigation', { name: 'Principal' });
-  expect(router.state.location.pathname).toBe('/library');
+  // The shell renders before the index <Navigate> effect runs, so wait for the redirect itself.
+  await waitFor(() => expect(router.state.location.pathname).toBe('/library'));
 });
 
 test('theme follows the profile preference and the switch persists it (RF40, RF41)', async () => {
@@ -118,6 +118,26 @@ describe('review TASK-005', () => {
     await userEvent.click(within(screen.getByRole('navigation', { name: 'Menu do perfil' })).getByRole('link', { name: 'Capturas privadas' }));
     expect(await screen.findByRole('heading', { level: 1, name: 'Suas capturas privadas' })).toBeInTheDocument();
     expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('keyboard navigation from the menu moves focus to the new page (re-review #2)', async () => {
+    signedIn();
+    renderApp('/library');
+    await userEvent.click(await screen.findByRole('button', { name: 'Menu' }));
+    within(screen.getByRole('navigation', { name: 'Menu do perfil' })).getByRole('link', { name: 'Fontes' }).focus();
+    await userEvent.keyboard('{Enter}');
+    await screen.findByRole('heading', { level: 1, name: 'Fontes monitoradas' });
+    expect(screen.getByRole('main')).toHaveFocus();
+  });
+
+  test('choosing the current page in the menu still moves focus to the page (re-review #3)', async () => {
+    signedIn();
+    renderApp('/library');
+    await userEvent.click(await screen.findByRole('button', { name: 'Menu' }));
+    within(screen.getByRole('navigation', { name: 'Menu do perfil' })).getByRole('link', { name: 'Biblioteca' }).focus();
+    await userEvent.keyboard('{Enter}');
+    expect(screen.queryByRole('navigation', { name: 'Menu do perfil' })).toBeNull();
+    expect(screen.getByRole('main')).toHaveFocus();
   });
 
   test('other keys keep the menu open; the button toggles it closed', async () => {

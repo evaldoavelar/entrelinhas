@@ -36,10 +36,22 @@ test('preference update without a session keeps the anonymous state', async () =
 
 test('unmounting during the session load aborts without updating state', async () => {
   let release: () => void = () => undefined;
-  server.use(http.get('/v1/session', () => new Promise<Response>((resolve) => (release = () => resolve(HttpResponse.json({}))))));
+  let called: () => void = () => undefined;
+  const handlerCalled = new Promise<void>((r) => (called = r));
+  server.use(
+    http.get(
+      '/v1/session',
+      () =>
+        new Promise<Response>((resolve) => {
+          release = () => resolve(HttpResponse.json({}));
+          called();
+        }),
+    ),
+  );
   const errors = vi.spyOn(console, 'error').mockImplementation(() => undefined);
   const { unmount } = render(<SessionProvider>conteúdo</SessionProvider>);
   expect(screen.getByText('conteúdo')).toBeInTheDocument();
+  await handlerCalled;
   unmount();
   release();
   await new Promise((r) => setTimeout(r, 20));
@@ -98,5 +110,33 @@ describe('review TASK-005 races', () => {
     release();
     await new Promise((r) => setTimeout(r, 20));
     expect(result.current.state.status).toBe('authenticated');
+  });
+
+  test('a slow logout cannot erase a session obtained afterwards (re-review #3)', async () => {
+    let release: () => void = () => undefined;
+    let called: () => void = () => undefined;
+    const handlerCalled = new Promise<void>((r) => (called = r));
+    server.use(
+      http.delete(
+        '/v1/session',
+        () =>
+          new Promise<Response>((resolve) => {
+            release = () => resolve(new HttpResponse(null, { status: 204 }));
+            called();
+          }),
+      ),
+    );
+    const { result } = renderHook(() => useSession(), { wrapper });
+    await waitFor(() => expect(result.current.state.status).toBe('anonymous'));
+    act(() => result.current.signedIn(sessionFor(0, 'dark')));
+    let pending: Promise<void> = Promise.resolve();
+    act(() => {
+      pending = result.current.signOut();
+    });
+    await handlerCalled;
+    act(() => result.current.signedIn(sessionFor(1, 'dark')));
+    release();
+    await act(() => pending);
+    expect(result.current.state).toMatchObject({ status: 'authenticated', session: { profile: { id: 'prof_ana' } } });
   });
 });
